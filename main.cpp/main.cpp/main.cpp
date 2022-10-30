@@ -9,7 +9,13 @@
 
 using namespace std;
 
-int main(int argc, const char * argv[]) {
-    std::cout << "Hello, World!\n";
+/**
+ *Metodo para x
+ *@param z
+ *@param y
+ *@return retorna booleano
+ */
+int main(){
+    cout<<"Hola"<<endl;
     return 0;
 }
