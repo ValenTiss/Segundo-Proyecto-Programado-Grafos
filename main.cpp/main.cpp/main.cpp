@@ -18,5 +18,6 @@ using namespace std;
 int main(){
     cout<<"Hola"<<endl;
     cout<<"Prueba"<<endl;
+    cout<<"."<<endl;
     return 0;
 }
