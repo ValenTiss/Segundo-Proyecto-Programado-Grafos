@@ -16,27 +16,26 @@ using namespace std;
  *@return retorna booleano
  */
 
-struct Vertice{ //Creacion del Vertice con el lugar que los turistas van a visitar
+struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar
     string lugar;
 
-    struct Vertice * sigV; //Enlace de los vertices en una lista
-    struct Arco *subLArcos; //Arcos que salen del vertice
+    struct Lugar * sigV; //Enlace de los vertices en una lista
+    struct Lugar *subLArcos; //Arcos que salen del vertice
 
     bool siVisitado;
-    Vertice (string lug){
+    Lugar (string lug){
         lugar = lug;
         sigV = NULL;
         subLArcos = NULL;
         siVisitado = false;
     }
 
-
 };
 
-struct Arco{
+struct Ruta{
     int tiempoRecorrido;
-    struct Arco* sigAr; 
-    Arco(int tr){
+    struct Ruta* sigAr;
+    Ruta(int tr){
         tiempoRecorrido = tr;
         sigAr = NULL;
 
@@ -44,16 +43,19 @@ struct Arco{
 
 };
 
-struct Vertice *grafo; // Apuntador del incio del grafo
-.
+struct Lugar *grafo; // Apuntador del incio del grafo
 
 
-
-
-
-
-
-
+bool pressKeyToContinue(){
+    cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
+    cout<<"Presione alguna tecla para limpiar ...";
+    char c = getchar();
+    if((int)c != 27){
+        cout<<"\x1B[2J\x1B[H";
+        return false;
+    }
+    return true;
+}
 
 void menu(){
 
