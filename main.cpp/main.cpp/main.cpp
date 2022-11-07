@@ -20,7 +20,7 @@ struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar
     string lugar;
 
     struct Lugar * sigV; //Enlace de los vertices en una lista
-    struct Lugar *subLArcos; //Arcos que salen del vertice
+    struct Ruta *subLArcos;//lo modifique porque decir lugar//Arcos que salen del vertice
 
     bool siVisitado;
     Lugar (string lug){
@@ -44,6 +44,23 @@ struct Ruta{
 };
 
 struct Lugar *grafo; // Apuntador del incio del grafo
+
+struct Persona{//Creacion de la persona (doble) con su lista de amigos
+    string nombre;
+    Persona* antP;
+    Persona* sigP;
+    Persona* listaAmigos;
+    struct Lugar* lugarInicio;
+    
+    Persona(string n){
+        nombre = n;
+        antP=NULL;
+        sigP= NULL;
+        listaAmigos=NULL;
+        lugarInicio=NULL;
+    }
+
+};
 
 
 bool pressKeyToContinue(){
