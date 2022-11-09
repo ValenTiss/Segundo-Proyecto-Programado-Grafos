@@ -63,6 +63,38 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
 };
 
 
+
+//insercion al inicio de la lista de lugares.
+void insertarLugar(string lug){
+            struct Lugar *nuevoLugar = new Lugar(lug);
+
+            nuevoLugar->sigL = grafo;
+            grafo = nuevoLugar;
+}
+
+
+//insertar Ruta
+void insertarRuta(int tiempoRecorrido){
+
+
+        struct Ruta *nuevaRuta = new Ruta(tiempoRecorrido);
+
+
+        //se inserto al inicio de la sublista de Rutas
+        nuevaRuta->sigR = nuevaRuta->sigR;
+        nuevaRuta->sigR = nuevaRuta;
+
+
+}
+
+
+
+void CargarDatos(){
+    insertarRuta(33);
+}
+
+
+
 bool pressKeyToContinue(){
     cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
     cout<<"Presione alguna tecla para limpiar ...";
