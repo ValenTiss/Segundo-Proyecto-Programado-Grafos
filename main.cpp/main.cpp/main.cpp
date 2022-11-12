@@ -121,7 +121,7 @@ void insertarRuta(string origen ,string destino,int tiempoRecorrido){
  */ 
 Persona* getPersona(string nombre,Lugar* lugarInicio){
     Persona*temp = listaDePersonas;
-    while(temp != NULL)
+    while(temp != listaDePersonas)
     {
         if( (temp->nombre == nombre) && (temp->lugarInicio == lugarInicio) )
             return temp;
@@ -129,6 +129,23 @@ Persona* getPersona(string nombre,Lugar* lugarInicio){
     }
     return NULL;
 }
+
+/**
+ *Metodo para imprimir todas las personas presentes en la lista de personas.
+ */
+void imprimirPersona(){
+    if(listaDePersonas == NULL){
+        cout<<"La lista de personas esta vacia"<<endl;
+        return;
+    }
+    Persona* temp = listaDePersonas;
+    while(temp->sigP != listaDePersonas){
+        cout<<"La persona " <<temp-> nombre<<" empezo en el lugar de  "<<temp->lugarInicio->lugar<<" se encuentra en la lista\n";
+        temp = temp -> sigP;
+    }
+
+}
+
 /**
  * Metodo para validar la existencia de una persona.
  * @param nombre Nombre de la persona a validar.
@@ -137,11 +154,12 @@ Persona* getPersona(string nombre,Lugar* lugarInicio){
  */ 
 bool validarPersona(string nombre,Lugar* lugarInicio){
     Persona*temp = listaDePersonas;
-    while(temp != NULL)
+    while(temp != listaDePersonas)
     {
         if( (temp->nombre == nombre) && (temp->lugarInicio == lugarInicio) )
             return true;
-        temp -> sigP = temp;
+        cout<<"Sigue buscando"<<endl;
+        temp = temp -> sigP;
     }
     return false;
 
@@ -157,16 +175,19 @@ Persona* insertarPersona(string nombre,Lugar* lugarInicio){
     bool existe = validarPersona(nombre,lugarInicio);
 
     if(existe)
+    {
+        cout<<"La persona ya existe en la lista"<<endl;
         return NULL;
-
+    }
+        
     Persona*nuevo = new Persona(nombre,lugarInicio);
 
     if(listaDePersonas == NULL){
         listaDePersonas = nuevo;
-        nuevo ->sigP = nuevo;
+        nuevo -> sigP = nuevo;
     }else
     {
-        nuevo -> sigP = listaDePersonas;
+        // nuevo -> sigP = listaDePersonas;
         Persona*temp = listaDePersonas;
         while(temp -> sigP != listaDePersonas)
         {
@@ -175,21 +196,10 @@ Persona* insertarPersona(string nombre,Lugar* lugarInicio){
         temp -> sigP = nuevo;
         listaDePersonas = nuevo;
     }
+    cout<<"La persona de nombre "<< nuevo -> nombre << " se agrego a la lista de personas."<<endl;
     return nuevo;
 }
 
-/**
- * Metodo para borrar persona de la lista.
- * @param nombre
- * @param lugarInicio 
- * @return 
- */ 
-//*void borrarPersona(string nombre,Lugar*lugarInicio){
- //   if(existe)
-  //      return;
-    
-    
-//}
 
 /**
  * Metodo para obtener una ruta especifica en la sublista.
@@ -210,11 +220,40 @@ bool buscarRuta( struct Lugar *origen, string destino){
         origen->siVisitado =true;
 
     struct Ruta *tempA =origen->subLArcos;
-    while(tempA != NULL){
-
+    while(tempA != NULL){ 
         buscarRuta(buscarLugar(tempA->tiempoRecorrido), destino);
         tempA = tempA->sigAr;
     }
+    return existeRuta;
+}
+
+bool borrarPersona(string nombre,Lugar*lugarInicio){
+    Persona* personaEliminar = getPersona(nombre,lugarInicio);
+
+    if(personaEliminar == NULL){
+        cout<<"Esta persona no existe en la lista"<<endl;
+        return false;
+    }else if(listaDePersonas == personaEliminar)
+    {
+        listaDePersonas = listaDePersonas->sigP;
+        cout<<"La persona de nombre"<<personaEliminar->nombre << "se elimino de la lista."<<endl;
+        return true;
+    }else
+    {//si esta en medio o al final de la lista
+        Persona *temp = listaDePersonas;
+        Persona *tempAnt = listaDePersonas;
+        while(temp != listaDePersonas){
+            if(temp == personaEliminar){//borrar
+                cout<<"La persona de nombre"<<personaEliminar->nombre << "se elimino de la lista."<<endl;
+                tempAnt->sigP  = temp->sigP;
+                return true;
+            }
+
+            tempAnt= temp;
+            temp = temp->sigP;
+        }
+    }
+    return false;
 }
 
 /**
@@ -330,6 +369,11 @@ void menu(){
 
 int main()
 {
-    menu();
+    //menu();
+    Lugar* l1 = new Lugar("SJ");
+    Persona*p1 = insertarPersona("Manuel",l1);
+    Persona*p2 = insertarPersona("V",new Lugar("Heredia") );
+    //borrarPersona("Juan",l1);
+    imprimirPersona();
     return 0;
 }

@@ -1,0 +1,1 @@
+        nuevo -> sigP = listaDePersonas;
