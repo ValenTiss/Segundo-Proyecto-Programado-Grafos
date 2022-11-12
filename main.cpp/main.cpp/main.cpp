@@ -35,7 +35,7 @@ struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar
  * Estrucutra que simboliza las rutas presentes en el grafo.
  */ 
 struct Ruta{
-    int tiempoRecorrido;
+    string tiempoRecorrido;
 
     struct Ruta* sigAr;
 
@@ -85,6 +85,17 @@ void insertarLugar(string lug){
         grafo = nuevoLugar;
 }
 
+struct Lugar *   buscarLugar(string origen){
+        struct Lugar *tempV = grafo;
+        while(tempV != NULL){
+            if(tempV->lugar == origen)
+                return tempV;
+
+            tempV = tempV->sigV;
+        }
+    return NULL;//no lo encontro
+}
+
 /**
  *insercion al inicio de la lista de rutas.
  *@param origen Nombre del lugar de origen de la ruta.
@@ -124,7 +135,7 @@ Persona* getPersona(string nombre,Lugar* lugarInicio){
  * @param lugarInicio Lugar donde inicio en el grafo la persona.
  * @return Booleano verdadero si se encontro la persona ,falso si no existe en la lista.
  */ 
-boolean validarPersona(string nombre,Lugar* lugarInicio){
+bool validarPersona(string nombre,Lugar* lugarInicio){
     Persona*temp = listaDePersonas;
     while(temp != NULL)
     {
@@ -143,7 +154,7 @@ boolean validarPersona(string nombre,Lugar* lugarInicio){
  *@return Objeto tipo persona agregada a la lista,nulo si no ya existe
  */ 
 Persona* insertarPersona(string nombre,Lugar* lugarInicio){
-    boolean existe = validarPersona(nombre,lugarInicio);
+    bool existe = validarPersona(nombre,lugarInicio);
 
     if(existe)
         return NULL;
@@ -157,11 +168,11 @@ Persona* insertarPersona(string nombre,Lugar* lugarInicio){
     {
         nuevo -> sigP = listaDePersonas;
         Persona*temp = listaDePersonas;
-        while(temp -> sig != listaDePersonas)
+        while(temp -> sigP != listaDePersonas)
         {
-            temp = temp -> sig;
+            temp = temp -> sigP;
         } 
-        temp -> sig = nuevo;
+        temp -> sigP = nuevo;
         listaDePersonas = nuevo;
     }
     return nuevo;
@@ -173,16 +184,38 @@ Persona* insertarPersona(string nombre,Lugar* lugarInicio){
  * @param lugarInicio 
  * @return 
  */ 
-void borrarPersona(string nombre,Lugar*lugarInicio){
-    if(existe)
-        return;
+//*void borrarPersona(string nombre,Lugar*lugarInicio){
+ //   if(existe)
+  //      return;
     
     
+//}
+
+/**
+ * Metodo para obtener una ruta especifica en la sublista.
+ * @param origen lugar de inicio
+ * @param destino lugar de llegada
+ * @return existeRuta true si existe la ruta o false si no.
+ */ 
+bool existeRuta = false;
+bool buscarRuta( struct Lugar *origen, string destino){
+
+    if((origen == NULL) or (origen->siVisitado== true))
+        return existeRuta;
+
+        if(origen->lugar == destino){
+                existeRuta= true;
+                return existeRuta;
+        }
+        origen->siVisitado =true;
+
+    struct Ruta *tempA =origen->subLArcos;
+    while(tempA != NULL){
+
+        buscarRuta(buscarLugar(tempA->tiempoRecorrido), destino);
+        tempA = tempA->sigAr;
+    }
 }
-
-
-
-
 
 /**
  *Cargar  datos
