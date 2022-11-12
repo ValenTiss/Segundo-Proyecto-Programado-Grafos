@@ -10,10 +10,7 @@
 using namespace std;
 
 /**
- *Metodo para x
- *@param z
- *@param y
- *@return retorna booleano
+ *Estructura lugar simboliza los lugares presentes en el
  */
 
 struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar
@@ -63,33 +60,41 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
 };
 
 
-
+/**
+ *insercion al inicio de la lista de lugares.
+ *@param lug Nombre del nuevo lugar
+ */
 //insercion al inicio de la lista de lugares.
 void insertarLugar(string lug){
             struct Lugar *nuevoLugar = new Lugar(lug);
 
-            nuevoLugar->sigL = grafo;
+            nuevoLugar->sigV = grafo;
             grafo = nuevoLugar;
 }
 
-
-//insertar Ruta
-void insertarRuta(int tiempoRecorrido){
+/**
+ *insercion al inicio de la lista de rutas.
+ *@param tiempoReccorido tiempo resultante de recorrer toda la ruta.
+ */
+void insertarRuta(string origen ,string destino,int tiempoRecorrido){
 
 
         struct Ruta *nuevaRuta = new Ruta(tiempoRecorrido);
 
 
         //se inserto al inicio de la sublista de Rutas
-        nuevaRuta->sigR = nuevaRuta->sigR;
-        nuevaRuta->sigR = nuevaRuta;
+        nuevaRuta->sigAr = nuevaRuta->sigAr;
+        nuevaRuta->sigAr = nuevaRuta;
 
 
 }
 
 
+/**
+ *Cargar  datos
+ */
 
-void CargarDatos(){
+void CargarDatosRuta(){
     insertarRuta(33);
 }
 
@@ -121,7 +126,7 @@ void menu(){
     cout<<endl<<"7) Imprimir las rutas para las personas que avanzan de la forma 3 y 4";
     cout<<endl<<"9) Imprimir la cantidad y el nombre de los amigos que logro realizar una persona";
     cout<<endl<<"10) Quien o quienes no encontraron ningun amigo";
-    cout<<endl<<"11 Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa";
+    cout<<endl<<"11) Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa";
 }
 
 int main()
