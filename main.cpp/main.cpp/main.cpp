@@ -59,15 +59,16 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
     Persona* sigP;
     Persona* listaAmigos;
     struct Lugar* lugarInicio;
+    struct Rutas* rutasRecorridas;
     
-    Persona(string n,Lugar* lugarInicio){
+    Persona(string n,struct Lugar* lugarInicio){
 
         nombre = n;
         antP=NULL;
         sigP= NULL;
         listaAmigos=NULL;
         this->lugarInicio = lugarInicio;
-
+        rutasRecorridas = NULL;
     }
 
 }*listaDePersonas;
@@ -78,17 +79,23 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
  *@param lug Nombre del nuevo lugar
  */
 //insercion al inicio de la lista de lugares.
-void insertarLugar(string lug){
+struct Lugar* insertarLugar(string lug){
         struct Lugar *nuevoLugar = new Lugar(lug);
 
         nuevoLugar->sigV = grafo;
         grafo = nuevoLugar;
+        return nuevoLugar;
 }
 
-struct Lugar *   buscarLugar(string origen){
+/**
+ * Metodo para obtener un lugar deseado.
+ * @param nombreLugar Nombre del lugar.
+ * @return Estructura de tipo lugar si la encuentra,sino nulo.
+ */ 
+struct Lugar * getLugar(string nombreLugar){
         struct Lugar *tempV = grafo;
         while(tempV != NULL){
-            if(tempV->lugar == origen)
+            if(tempV->lugar == nombreLugar)
                 return tempV;
 
             tempV = tempV->sigV;
@@ -119,11 +126,11 @@ void insertarRuta(string origen ,string destino,int tiempoRecorrido){
  * @param lugarInicio Lugar de inicio de la persona a buscar.
  * @return La persona si se encuentra en la lista, nulo si no se encuentra 
  */ 
-Persona* getPersona(string nombre,Lugar* lugarInicio){
-    Persona*temp = listaDePersonas;
+Persona* getPersona(string nombre,Persona* listaPersonas){
+    Persona*temp = listaPersonas;
     while(temp != NULL)
     {
-        if( (temp->nombre == nombre) && (temp->lugarInicio == lugarInicio) )
+        if(temp->nombre == nombre)
             return temp;
         temp =  temp -> sigP ;
     }
@@ -158,11 +165,11 @@ void imprimirPersona(){
  * @param lugarInicio Lugar donde inicio en el grafo la persona.
  * @return Booleano verdadero si se encontro la persona ,falso si no existe en la lista.
  */ 
-bool validarPersona(string nombre,Lugar* lugarInicio){
-    Persona*temp = listaDePersonas;
-    while(temp != listaDePersonas)
+bool validarPersona(string nombre,string lugarInicio,Persona* listaPersonas){
+    Persona*temp = listaPersonas;
+    while(temp != listaPersonas)
     {
-        if( (temp->nombre == nombre) && (temp->lugarInicio == lugarInicio) )
+        if( (temp->nombre == nombre) && (temp->lugarInicio->lugar == lugarInicio) )
             return true;
         cout<<"Sigue buscando"<<endl;
         temp = temp -> sigP;
@@ -177,8 +184,8 @@ bool validarPersona(string nombre,Lugar* lugarInicio){
  *@param lugarInicio Lugar de inicio de la persona.
  *@return Objeto tipo persona agregada a la lista,nulo si no ya existe
  */ 
-Persona* insertarPersona(string nombre,Lugar* lugarInicio){
-    bool existe = validarPersona(nombre,lugarInicio);
+Persona* insertarPersona(string nombre,string lugarInicio){
+    bool existe = validarPersona(nombre,lugarInicio,listaDePersonas);
 
     if(existe)
     {
@@ -186,7 +193,7 @@ Persona* insertarPersona(string nombre,Lugar* lugarInicio){
         return NULL;
     }
         
-    Persona*nuevo = new Persona(nombre,lugarInicio);
+    Persona*nuevo = new Persona(nombre,getLugar(lugarInicio));
 
     nuevo -> sigP = listaDePersonas;
     if(listaDePersonas != NULL){
@@ -194,7 +201,6 @@ Persona* insertarPersona(string nombre,Lugar* lugarInicio){
     }
     listaDePersonas = nuevo;
 
-    cout<<"La persona de nombre "<< nuevo -> nombre << " se agrego a la lista de personas."<<endl;
     return nuevo;
 }
 
@@ -219,21 +225,21 @@ bool buscarRuta( struct Lugar *origen, string destino){
 
     struct Ruta *tempA =origen->subLArcos;
     while(tempA != NULL){ 
-        buscarRuta(buscarLugar(tempA->tiempoRecorrido), destino);
+        buscarRuta(getLugar(tempA->tiempoRecorrido), destino);
         tempA = tempA->sigAr;
     }
     return existeRuta;
 }
 
-bool borrarPersona(string nombre,Lugar*lugarInicio){
-    Persona* personaEliminar = getPersona(nombre,lugarInicio);
+bool borrarPersona(string nombre){
+    Persona* personaEliminar = getPersona(nombre,listaDePersonas);
 
     if(personaEliminar == NULL){
         cout<<"Esta persona no existe en la lista"<<endl;
         return false;
     
     }
-    else if((listaDePersonas->nombre == nombre)&&(listaDePersonas->lugarInicio == lugarInicio)){
+    else if(listaDePersonas->nombre == nombre){
             listaDePersonas = listaDePersonas->sigP;
             return true;
     }else
@@ -241,7 +247,7 @@ bool borrarPersona(string nombre,Lugar*lugarInicio){
         Persona *temp = listaDePersonas;
         Persona *tempAnt= listaDePersonas;
         while(temp != NULL){
-            if((temp->nombre == nombre)&&(temp->lugarInicio == lugarInicio)){//borrar
+            if(temp->nombre == nombre){//borrar
                     tempAnt->sigP  = temp->sigP;
                     return true;
             }
@@ -252,6 +258,60 @@ bool borrarPersona(string nombre,Lugar*lugarInicio){
     return false;
 }
 
+/**
+ * Metodo para agregar nuevo amigo a la lista de amistades de una persona.
+ * @param nombrePersona Nombre de la persona.
+ * @param nombreAmigo Nuevo amigo a agregar a lista.
+ */ 
+void agregarAmistadPersona(string nombrePersona,string nombreAmigo){
+    Persona* persona = getPersona(nombrePersona,listaDePersonas);
+
+    if(persona == NULL){
+        cout<<"No se le puede agregar amigos a la persona ,ya que esta no existe en el grafo."<<endl;
+    }
+
+    Persona* amigo = getPersona(nombreAmigo,listaDePersonas);
+
+    if(amigo == NULL){
+        cout<<"La nueva amistad no existe en el grafo ,intenta agregandolo primero a este."<<endl;
+    }
+    Persona*amistades = persona->listaAmigos; 
+    amigo -> sigP = amistades;
+    if(amistades != NULL){
+        amistades -> antP = amigo;
+    }
+    amistades = amigo;
+}
+
+/**
+ * Metodo para mostrar en consola todas las amistades de una persona
+ * @param nombrePersona Nombre de la persona a mostrar amistades
+ */ 
+void imprimirAmistades(string nombrePersona){
+    Persona* persona = getPersona(nombrePersona,listaDePersonas);
+
+    if(persona == NULL){
+        cout<<"La persona no se encontro en el grafo"<<endl;
+        return;
+    }
+
+    Persona* amistades = persona->listaAmigos;
+
+    if(amistades == NULL){
+        cout<<persona->nombre<<" no tiene amigos."<<endl;
+        return;
+    }
+    
+    Persona* temp = amistades;
+    while (temp->sigP != NULL){
+        temp = temp -> sigP;
+    }
+    while (temp != NULL){
+        cout<<"La persona " <<persona-> nombre<<" es amigo de  "<<temp -> nombre<<endl;
+        temp = temp -> antP;
+        
+    }
+}
 /**
  *Cargar  datos
  */
@@ -366,11 +426,17 @@ void menu(){
 int main()
 {
     //menu();
-    Lugar* l1 = new Lugar("SJ");
-    Persona*p1 = insertarPersona("Manuel",l1);
-    Persona*p2 = insertarPersona("V",new Lugar("Heredia") );
-    Persona*p3 = insertarPersona("J",new Lugar("PQ") );
-    borrarPersona("Manuel",l1);
+    struct Lugar* l1 = insertarLugar("SJ");
+    struct Lugar* l2 = insertarLugar("Heredia");
+    struct Lugar* l3 = insertarLugar("PQ");
+
+    Persona*p1 = insertarPersona("Manuel","SJ");
+    Persona*p2 = insertarPersona("V","Heredia");
+    Persona*p3 = insertarPersona("J","PQ");
+    //borrarPersona("Manuel");
+    agregarAmistadPersona("V","Manuel");
+    agregarAmistadPersona("V","J");
     imprimirPersona();
+    //imprimirAmistades("Manuel");
     return 0;
 }
