@@ -327,6 +327,9 @@ void imprimirAmistades(string nombrePersona){
     }
 }
 
+/**
+ * Metodo para mostrar en consola aquellas personas que no tienen amigos
+ */ 
 void personasSinAmigos(){
     Persona* temp = listaDePersonas;
     while (temp->sigP != NULL){
