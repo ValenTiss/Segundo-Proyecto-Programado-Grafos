@@ -80,11 +80,11 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
  */
 //insercion al inicio de la lista de lugares.
 struct Lugar* insertarLugar(string lug){
-        struct Lugar *nuevoLugar = new Lugar(lug);
+    struct Lugar *nuevoLugar = new Lugar(lug);
 
-        nuevoLugar->sigV = grafo;
-        grafo = nuevoLugar;
-        return nuevoLugar;
+    nuevoLugar->sigV = grafo;
+    grafo = nuevoLugar;
+    return nuevoLugar;
 }
 
 /**
@@ -194,7 +194,7 @@ Persona* insertarPersona(string nombre,string lugarInicio){
     }
         
     Persona*nuevo = new Persona(nombre,getLugar(lugarInicio));
-
+  
     nuevo -> sigP = listaDePersonas;
     if(listaDePersonas != NULL){
         listaDePersonas -> antP = nuevo;
@@ -264,23 +264,37 @@ bool borrarPersona(string nombre){
  * @param nombreAmigo Nuevo amigo a agregar a lista.
  */ 
 void agregarAmistadPersona(string nombrePersona,string nombreAmigo){
-    Persona* persona = getPersona(nombrePersona,listaDePersonas);
+   Persona*persona = getPersona(nombrePersona,listaDePersonas);
 
     if(persona == NULL){
         cout<<"No se le puede agregar amigos a la persona ,ya que esta no existe en el grafo."<<endl;
     }
 
-    Persona* amigo = getPersona(nombreAmigo,listaDePersonas);
+    Persona*personaBackup = persona;
+    Persona*amigo = getPersona(nombreAmigo,listaDePersonas);
 
     if(amigo == NULL){
         cout<<"La nueva amistad no existe en el grafo ,intenta agregandolo primero a este."<<endl;
     }
-    Persona*amistades = persona->listaAmigos; 
-    amigo -> sigP = amistades;
-    if(amistades != NULL){
-        amistades -> antP = amigo;
+
+    Persona*amigoBackup = amigo;
+    amigo = new Persona(amigo->nombre,amigo->lugarInicio);
+    
+    amigo -> sigP = persona->listaAmigos;
+    if(persona->listaAmigos != NULL){
+        persona->listaAmigos -> antP = amigo;
     }
-    amistades = amigo;
+    persona->listaAmigos = amigo;
+
+    personaBackup = new Persona(personaBackup->nombre,personaBackup->lugarInicio);
+    
+    personaBackup -> sigP = amigoBackup->listaAmigos;
+    if(amigoBackup->listaAmigos != NULL){
+        amigoBackup->listaAmigos -> antP = personaBackup;
+    }
+    amigoBackup->listaAmigos = personaBackup;
+
+
 }
 
 /**
@@ -312,6 +326,20 @@ void imprimirAmistades(string nombrePersona){
         
     }
 }
+
+void personasSinAmigos(){
+    Persona* temp = listaDePersonas;
+    while (temp->sigP != NULL){
+        temp = temp -> sigP;
+    }
+    while (temp != NULL){
+        if(temp ->listaAmigos == NULL){
+            cout<<temp -> nombre<<" no tiene amigos. "<<endl;
+        }
+        temp = temp -> antP;
+        
+    }
+}
 /**
  *Cargar  datos
  */
@@ -335,7 +363,7 @@ bool pressKeyToContinue(){
 
 void dibujarMenu(int opcion)
 {
-    cout<<"[X] Presione esc para salir. "<<endl<<endl;
+    pressKeyToContinue();
     switch(opcion)
     {
         case 0:
@@ -430,13 +458,14 @@ int main()
     struct Lugar* l2 = insertarLugar("Heredia");
     struct Lugar* l3 = insertarLugar("PQ");
 
-    Persona*p1 = insertarPersona("Manuel","SJ");
     Persona*p2 = insertarPersona("V","Heredia");
+    Persona*p1 = insertarPersona("Manuel","SJ");
     Persona*p3 = insertarPersona("J","PQ");
     //borrarPersona("Manuel");
-    agregarAmistadPersona("V","Manuel");
-    agregarAmistadPersona("V","J");
+    //agregarAmistadPersona("Manuel","J");
+    //agregarAmistadPersona("Manuel","V");
     imprimirPersona();
     //imprimirAmistades("Manuel");
+    personasSinAmigos();
     return 0;
 }
