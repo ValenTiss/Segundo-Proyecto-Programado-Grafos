@@ -633,17 +633,17 @@ void menu(){
 
 int main()
 {
-    //menu();
+    menu();
 
-    Lugar *l1 = insertarLugar("San Jose");
-    insertarLugar("Heredia");
-    insertarLugar("Alajuela");
-
-    insertarRuta("San Jose", "Heredia","12");
-    insertarRuta("Heredia", "Alajuela", "13");
-    //insertarRuta("San Jose", "Alajuela","12");
-    profundidad(l1);
-    amplitud();
+//    Lugar *l1 = insertarLugar("San Jose");
+//    insertarLugar("Heredia");
+//    insertarLugar("Alajuela");
+//
+//    insertarRuta("San Jose", "Heredia","12");
+//    insertarRuta("Heredia", "Alajuela", "13");
+//    //insertarRuta("San Jose", "Alajuela","12");
+//    profundidad(l1);
+//    amplitud();
     
 
     return 0;
