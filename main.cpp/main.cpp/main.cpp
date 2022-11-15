@@ -65,6 +65,7 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
     Persona* sigP;
     Persona* listaAmigos;
     struct Lugar* lugarInicio;
+    struct Lugar* lugarActual;
     struct Lugar* lugarDestino;
     struct Ruta* rutasRecorridas;
     struct Lugar* lugaresVisitados;
@@ -79,6 +80,7 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
         antP=NULL;
         sigP= NULL;
         this->lugarInicio = lugarInicio;
+        this->lugarActual = lugarInicio;
         this->lugarDestino = lugarDestino;
         listaAmigos=NULL;
         rutasRecorridas = NULL;
@@ -515,6 +517,14 @@ void personasSinAmigos(){
 
 void CargarDatosRuta(){
     insertarRuta("origen","destino","33");
+}
+
+/**
+ *Metodo para que una persona avance de manera aleatoria
+ *@param persona Persona la cual se va a mover
+ */
+void avanzarAleatorio(Persona* persona){
+    
 }
 
 void mantenimientoListas(int opcion){
