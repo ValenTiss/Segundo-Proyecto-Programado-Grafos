@@ -15,14 +15,16 @@ using namespace std;
 
 struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar
     string lugar;
-
     struct Lugar * sigV; //Enlace de los vertices en una lista
     struct Ruta *subLArcos;//lo modifique porque decir lugar//Arcos que salen del vertice
 
     bool siVisitado;
 
+    /**
+     * Metodo constructor de la estructura lugar
+     * @param lug Nombre del lugar
+     */ 
     Lugar (string lug){
-
         lugar = lug;
         sigV = NULL;
         subLArcos = NULL;
@@ -36,12 +38,16 @@ struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar
  */ 
 struct Ruta{
     string tiempoRecorrido;
-
     struct Ruta* sigAr;
+    string destino;
 
-    Ruta(int tr){
-
+    /**
+     * Metodo constructor de la estructra ruta
+      * @param tr Tiempo que tarda en recorrerse esta ruta
+     */ 
+    Ruta(string tr,string destino){
         tiempoRecorrido = tr;
+        this->destino = destino;
         sigAr = NULL;
 
     }
@@ -59,33 +65,30 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
     Persona* sigP;
     Persona* listaAmigos;
     struct Lugar* lugarInicio;
-    struct Rutas* rutasRecorridas;
+    struct Lugar* lugarDestino;
+    struct Ruta* rutasRecorridas;
+    struct Lugar* lugaresVisitados;
     
-    Persona(string n,struct Lugar* lugarInicio){
-
+    /**
+     * Metodo constructor de la estructura persona
+     * @param n Nombre de la persona
+     * @param lugarInicio Lugar de inicio de esta persona
+     */ 
+    Persona(string n,struct Lugar* lugarInicio ,Lugar* lugarDestino){
         nombre = n;
         antP=NULL;
         sigP= NULL;
-        listaAmigos=NULL;
         this->lugarInicio = lugarInicio;
+        this->lugarDestino = lugarDestino;
+        listaAmigos=NULL;
         rutasRecorridas = NULL;
+        lugaresVisitados = lugarInicio;
+        lugaresVisitados ->sigV;
     }
 
 }*listaDePersonas;
 
 
-/**
- *insercion al inicio de la lista de lugares.
- *@param lug Nombre del nuevo lugar
- */
-//insercion al inicio de la lista de lugares.
-struct Lugar* insertarLugar(string lug){
-    struct Lugar *nuevoLugar = new Lugar(lug);
-
-    nuevoLugar->sigV = grafo;
-    grafo = nuevoLugar;
-    return nuevoLugar;
-}
 
 /**
  * Metodo para obtener un lugar deseado.
@@ -104,26 +107,200 @@ struct Lugar * getLugar(string nombreLugar){
 }
 
 /**
- *insercion al inicio de la lista de rutas.
- *@param origen Nombre del lugar de origen de la ruta.
- *@param destino Nombre del lugar de destino de la ruta.
- *@param tiempoReccorido tiempo resultante de recorrer toda la ruta.
+ *Insercion al inicio de la lista de lugares.
+ *@param lug Nombre del nuevo lugar
  */
-void insertarRuta(string origen ,string destino,int tiempoRecorrido){
+//insercion al inicio de la lista de lugares.
+struct Lugar* insertarLugar(string lug){
+    Lugar*verificarLugar = getLugar(lug);
 
-        struct Ruta *nuevaRuta = new Ruta(tiempoRecorrido);
+    if(verificarLugar != NULL){
+        cout<<"Este lugar ya existe."<<endl;
+        return NULL;
+    }
+    
+    struct Lugar *nuevoLugar = new Lugar(lug);
 
-        //se inserto al inicio de la sublista de Rutas
-        nuevaRuta->sigAr = nuevaRuta->sigAr;
-        nuevaRuta->sigAr = nuevaRuta;
+    nuevoLugar->sigV = grafo;
+    grafo = nuevoLugar;
+    return nuevoLugar;
+}
 
+/**
+ *Metodo para recorrer en amplitud los lugares.
+ */
+void amplitud(){
+        struct Lugar *tempL = grafo;
+
+        while(tempL != NULL){//RECORRE LA LISTA DE VERTICES
+            cout<<"\n Lugar: "<<tempL->lugar<<"->\t";
+            struct Ruta *tempR = tempL->subLArcos;
+
+            while(tempR != NULL){//RECORRE LOS ARCOS DE LA LISTA DE ARCOS DEL VERTICE
+                    cout<<"desde "<<tempL->lugar<<" hasta "<<tempR->destino<<" se tarda "<<tempR->tiempoRecorrido<<" minutos ,  ";
+                tempR = tempR->sigAr;
+            }
+            tempL = tempL->sigV;
+        }
+}
+
+/**
+ *Metodo para recorrer en profundidad los lugares
+ *@param inicio Lugar donde se quiere hacer el recorrido
+ */
+void profundidad (struct Lugar *inicio){
+        if((inicio == NULL) or (inicio->siVisitado == true)){
+                cout<<endl;
+            return;
+        }
+
+        inicio->siVisitado = true;
+
+        struct Ruta * tempR = inicio->subLArcos;
+        while(tempR != NULL){
+            cout<<inicio->lugar<<" a "<<tempR->destino<<" "<<tempR->tiempoRecorrido<<" minutos,  ";
+
+            profundidad(getLugar(tempR->destino));
+
+            tempR = tempR->sigAr;
+        }
 
 }
+
+
+bool existeRuta = false;
+/**
+ * Metodo para obtener una ruta especifica en la sublista.
+ * @param origen lugar de inicio
+ * @param destino lugar de llegada
+ * @return existeRuta true si existe la ruta o false si no.
+ */
+bool buscarRuta(struct Lugar *origen, string destino){
+
+    if((origen == NULL) or (origen->siVisitado== true))
+        return existeRuta;
+
+        if(origen->lugar == destino){
+                existeRuta= true;
+                return existeRuta;
+        }
+        origen->siVisitado =true;
+
+    struct Ruta *tempA =origen->subLArcos;
+    while(tempA != NULL){
+        buscarRuta(getLugar(tempA->tiempoRecorrido), destino);
+        tempA = tempA->sigAr;
+    }
+    return existeRuta;
+}
+
+
+/**
+ *Metodo para mostrar en consola todas las rutas con su debido tiempo de recorrido,este metodo es recursivo.
+ *@param anexo Lugar de origen.
+ *@param destino Lugar de destino.
+ *@param ruta Rutas las cuales se toman.
+ *@param dis Tiempo que se tarda en recorrer hasta el destino.
+ *@return Booleano que examina si existe rutas.
+ */
+bool imprimirRutaconDistancias(struct Lugar *anexo, string destino, string ruta, int dis){
+    if((anexo == NULL) or (anexo->siVisitado == true))
+            return existeRuta;
+
+            if(anexo->lugar == destino){
+                    cout<<"\nLa ruta es: "<<ruta<<destino<<" La distancia es: "<<dis;
+                    existeRuta= true;
+                     return existeRuta;
+            }
+        anexo->siVisitado =true;
+
+        struct Ruta *tempR =anexo->subLArcos;
+        while(tempR != NULL){
+            imprimirRutaconDistancias(getLugar(tempR->destino), destino,
+                                      ruta+anexo->lugar, dis + stoi(tempR->tiempoRecorrido));
+            tempR = tempR->sigAr;
+        }
+        anexo->siVisitado =false;
+    return false;
+}
+
+//variables globales
+string rutaMenor = "";
+int distanciaMenor = 0;
+
+/**
+ *Meotdo para encontrar la ruta mas corta hacia un lugar,este metodo es recursivo.
+ *@param anexo Lugar de origen a encontrar ruta.
+ *@param destino Lugar de destino al cual se quiere llegar.
+ *@param ruta Rutas las cuales se tienen que tomar para llegar al destino.
+ *@param dis Distancia recorrida para llegar al destino.
+ *@return Booleano que examina la existencia de rutas entre los lugares.
+ */
+bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
+    if((anexo == NULL) or (anexo->siVisitado == true))
+        return existeRuta;
+
+        if(anexo->lugar == destino){
+                if((distanciaMenor==0) || (dis < distanciaMenor)){
+                        distanciaMenor =dis;
+                        rutaMenor = ruta+destino;
+                }
+                existeRuta= true;
+                 return existeRuta;
+        }
+    anexo->siVisitado =true;
+
+    struct Ruta *tempR =anexo->subLArcos;
+    while(tempR != NULL){
+
+        rutaCorta(getLugar(tempR->destino), destino, ruta+anexo->lugar, dis + stoi(tempR->tiempoRecorrido));
+        tempR = tempR->sigAr;
+    }
+    anexo->siVisitado =false;
+    return false;
+}
+
+/**
+ *insercion al inicio de la lista de rutas.
+ *@param anexo Nombre del lugar de origen de la ruta.
+ *@param conexo Nombre del lugar de destino de la ruta.
+ *@param tiempoRecorrido tiempo resultante de recorrer toda la ruta.
+ */
+Ruta* insertarRuta(string anexo ,string conexo,string tiempoRecorrido){
+    Lugar*lugarAnexo = getLugar(anexo);
+
+    if(lugarAnexo == NULL){
+        cout<<"El lugar "<<anexo <<" no existe en el grafo."<< endl;
+        return NULL;
+    }
+
+    Lugar*lugarConexo = getLugar(conexo);
+
+    if(lugarConexo == NULL){
+        cout<<"El lugar "<<conexo <<" no existe en el grafo."<< endl;
+        return NULL;
+    }
+
+
+    struct Ruta *nuevaRuta = new Ruta(tiempoRecorrido,conexo);
+
+    //se inserto al inicio de la sublista de Arcos del primer lugar
+    nuevaRuta->sigAr = lugarAnexo->subLArcos;
+    lugarAnexo->subLArcos = nuevaRuta;
+
+    struct Ruta *nuevaRutaP = new Ruta(tiempoRecorrido,anexo);
+    //se inserto al inicio de la sublista de Arcos del segundo lugar
+    nuevaRutaP->sigAr = lugarConexo->subLArcos;
+    lugarConexo->subLArcos = nuevaRutaP;
+
+    return nuevaRuta;
+}
+
 
 /**
  * Metodo para obtener una persona especifica en la lista.
  * @param nombre Nombre de la persona la cual se esta buscando.
- * @param lugarInicio Lugar de inicio de la persona a buscar.
+ * @param listaPersonas Lugar de inicio de la persona a buscar.
  * @return La persona si se encuentra en la lista, nulo si no se encuentra 
  */ 
 Persona* getPersona(string nombre,Persona* listaPersonas){
@@ -184,7 +361,7 @@ bool validarPersona(string nombre,string lugarInicio,Persona* listaPersonas){
  *@param lugarInicio Lugar de inicio de la persona.
  *@return Objeto tipo persona agregada a la lista,nulo si no ya existe
  */ 
-Persona* insertarPersona(string nombre,string lugarInicio){
+Persona* insertarPersona(string nombre,string lugarInicio,string lugarDestino){
     bool existe = validarPersona(nombre,lugarInicio,listaDePersonas);
 
     if(existe)
@@ -192,9 +369,20 @@ Persona* insertarPersona(string nombre,string lugarInicio){
         cout<<"La persona ya existe en la lista"<<endl;
         return NULL;
     }
-        
-    Persona*nuevo = new Persona(nombre,getLugar(lugarInicio));
-  
+    Lugar* lugarI = getLugar(lugarInicio);
+    Lugar* lugarD = getLugar(lugarDestino);
+    if(lugarI == NULL){
+        cout<<"El lugar de inicio no existe."<<endl;
+        return NULL;
+    }
+
+    if(lugarD == NULL){
+        cout<<"El lugar destino no existe."<<endl;
+        return NULL;
+    }
+
+    Persona*nuevo = new Persona(nombre,lugarI,lugarD);
+    
     nuevo -> sigP = listaDePersonas;
     if(listaDePersonas != NULL){
         listaDePersonas -> antP = nuevo;
@@ -204,33 +392,11 @@ Persona* insertarPersona(string nombre,string lugarInicio){
     return nuevo;
 }
 
-
 /**
- * Metodo para obtener una ruta especifica en la sublista.
- * @param origen lugar de inicio
- * @param destino lugar de llegada
- * @return existeRuta true si existe la ruta o false si no.
- */ 
-bool existeRuta = false;
-bool buscarRuta( struct Lugar *origen, string destino){
-
-    if((origen == NULL) or (origen->siVisitado== true))
-        return existeRuta;
-
-        if(origen->lugar == destino){
-                existeRuta= true;
-                return existeRuta;
-        }
-        origen->siVisitado =true;
-
-    struct Ruta *tempA =origen->subLArcos;
-    while(tempA != NULL){ 
-        buscarRuta(getLugar(tempA->tiempoRecorrido), destino);
-        tempA = tempA->sigAr;
-    }
-    return existeRuta;
-}
-
+ *Metodo para borrar objetos de tipo persona de la lista
+ *@param nombre Nombre de la persona la cual se quiere eliminar
+ *@return Falso si no se pudo insertar,verdadero si se pudo borrar.
+ */
 bool borrarPersona(string nombre){
     Persona* personaEliminar = getPersona(nombre,listaDePersonas);
 
@@ -278,7 +444,7 @@ void agregarAmistadPersona(string nombrePersona,string nombreAmigo){
     }
 
     Persona*amigoBackup = amigo;
-    amigo = new Persona(amigo->nombre,amigo->lugarInicio);
+    amigo = new Persona(amigo->nombre,amigo->lugarInicio,amigo->lugarDestino);
     
     amigo -> sigP = persona->listaAmigos;
     if(persona->listaAmigos != NULL){
@@ -286,7 +452,7 @@ void agregarAmistadPersona(string nombrePersona,string nombreAmigo){
     }
     persona->listaAmigos = amigo;
 
-    personaBackup = new Persona(personaBackup->nombre,personaBackup->lugarInicio);
+    personaBackup = new Persona(personaBackup->nombre,personaBackup->lugarInicio,personaBackup->lugarDestino);
     
     personaBackup -> sigP = amigoBackup->listaAmigos;
     if(amigoBackup->listaAmigos != NULL){
@@ -348,10 +514,24 @@ void personasSinAmigos(){
  */
 
 void CargarDatosRuta(){
-    insertarRuta("origen","destino",33);
+    insertarRuta("origen","destino","33");
 }
 
-
+void mantenimientoListas(int opcion){
+    switch (opcion)
+    {
+    case 0:
+    {
+        cout<<""<<endl;
+        break;
+    }
+        
+        
+    case 1:
+    default:
+        break;
+    }
+}
 
 bool pressKeyToContinue(){
     cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
@@ -366,7 +546,6 @@ bool pressKeyToContinue(){
 
 void dibujarMenu(int opcion)
 {
-    pressKeyToContinue();
     switch(opcion)
     {
         case 0:
@@ -406,8 +585,6 @@ void dibujarMenu(int opcion)
             cout<<endl<<"\t[6] -  Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa"<<endl;
             break;
         }
-        
-        
     }
 }
 
@@ -416,7 +593,7 @@ void dibujarMenu(int opcion)
  */
 void menu(){
      
-        cout<<"\x1B[2J\x1B[H";
+        pressKeyToContinue();
         int c;
         do {
             dibujarMenu(0);
@@ -427,7 +604,7 @@ void menu(){
                 {
                     dibujarMenu(1);
                     int opcionUno = getchar();
-                
+                    //mantenimientoListas();
                     break;
                 }
             case 2:
@@ -457,18 +634,17 @@ void menu(){
 int main()
 {
     //menu();
-    struct Lugar* l1 = insertarLugar("SJ");
-    struct Lugar* l2 = insertarLugar("Heredia");
-    struct Lugar* l3 = insertarLugar("PQ");
 
-    Persona*p2 = insertarPersona("V","Heredia");
-    Persona*p1 = insertarPersona("Manuel","SJ");
-    Persona*p3 = insertarPersona("J","PQ");
-    //borrarPersona("Manuel");
-    //agregarAmistadPersona("Manuel","J");
-    //agregarAmistadPersona("Manuel","V");
-    imprimirPersona();
-    //imprimirAmistades("Manuel");
-    personasSinAmigos();
+    Lugar *l1 = insertarLugar("San Jose");
+    insertarLugar("Heredia");
+    insertarLugar("Alajuela");
+
+    insertarRuta("San Jose", "Heredia","12");
+    insertarRuta("Heredia", "Alajuela", "13");
+    //insertarRuta("San Jose", "Alajuela","12");
+    profundidad(l1);
+    amplitud();
+    
+
     return 0;
 }
