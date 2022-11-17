@@ -648,7 +648,11 @@ bool pressKeyToContinue(){
     }
     return true;
 }
-
+/**
+ * Metodo para dibujar menu
+ * 
+ * @param opcion opcion 
+*/
 void dibujarMenu(int opcion)
 {
     switch(opcion)
