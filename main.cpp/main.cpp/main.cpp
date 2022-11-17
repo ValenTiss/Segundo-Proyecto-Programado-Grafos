@@ -6,13 +6,8 @@
 //
 
 #include <iostream>
-#include <vector>
-#include <cstdlib>
 
 using namespace std;
-
-//Definiciones para poder recorrer rutas
-#define INF 999
 
 /**
  *Estructura lugar simboliza los lugares presentes en el
@@ -79,8 +74,6 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
      * Metodo constructor de la estructura persona
      * @param n Nombre de la persona
      * @param lugarInicio Lugar de inicio de esta persona
-     * @param lugarActual Lugar de actual de esta persona
-     * @param lugarDestino Lugar de destino de esta persona
      */ 
     Persona(string n,struct Lugar* lugarInicio ,Lugar* lugarDestino){
         nombre = n;
@@ -201,14 +194,6 @@ bool buscarRuta(struct Lugar *origen, string destino){
         tempA = tempA->sigAr;
     }
     return existeRuta;
-}
-
-/**
- Metodo para contar cuantas rutas existen en un
- */
-
-int rutasQty(Lugar* lugar){
-    return 0;
 }
 
 /**
@@ -538,48 +523,6 @@ void CargarDatosRuta(){
  *@param persona Persona la cual se va a mover
  */
 void avanzarAleatorio(Persona* persona){
-
-    Lugar* inicio= persona->lugarActual;
-    Lugar* listaDeDestinos;
-    vector<string> lugares;
-    int ind;
-
-
-    if((inicio == NULL) or (inicio->siVisitado == true)){
-                cout<<endl;
-            return;
-        }
-        inicio->siVisitado = true;
-
-        struct Ruta * tempR = inicio->subLArcos;
-        while(tempR != NULL){
-
-            lugares.push_back(tempR->destino);
-
-            tempR = tempR->sigAr;
-        }
-
-        for (size_t i = 0; i < lugares.size(); i++) {
-                cout << "lugares"<<lugares[i] <<endl;
-            }
-
-
-    //ind=rand()%(lugares.size()-0+1)+0;
-    //cout<<ind<<"hola"<<endl;
-    cout<<lugares.size()<<endl;
-    cout<<" el lugar escojido es "<<lugares[1]<<endl;//Valentin aca tiene que ir el valor aleatorio para escojer un lugar en la lista
-    
-}
-
-
-/**
- *Metodo  para encontrar la ruta mas corta hacia un destino
- *@param persona Objeto tipo persona la cual quiere tomar la ruta corta.
- */
-void rutaCortaDestino(Persona *persona){
-    Lugar*lugarExaminar = persona->lugarInicio;
-    
-    
     
 }
 
@@ -703,35 +646,7 @@ void menu(){
 
 int main()
 {
-    //menu();
+    //menu();    
     
-    int indd;
-    indd=rand()%100;
-    cout<<indd<<"hola"<<endl;
-
-    insertarLugar("San Jose");
-    insertarLugar("Heredia");
-    insertarLugar("Alajuela");
-    insertarLugar("SC");
-    insertarLugar("Naranjo");
-
-    Persona* p1= insertarPersona("Juan", "San Jose", "Heredia");
-
-//    insertarLugar("Heredia");
-//    insertarLugar("Alajuela");
-//
-    insertarRuta("San Jose", "Naranjo","12");
-    insertarRuta("San Jose", "Alajuela", "13");
-    insertarRuta("San Jose", "Heredia","12");
-    
-    insertarRuta("San Jose", "SC", "13");
-
-//    //insertarRuta("San Jose", "Alajuela","12");
-//    profundidad(l1);
-//    amplitud();
-
-    avanzarAleatorio(p1);
-    
-
     return 0;
 }
