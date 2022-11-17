@@ -588,11 +588,46 @@ void rutaCortaDestino(Persona *persona){
  *@param opcion Opcion ingresada por el usuario a ejecutar
  */
 void mantenimientoListas(int opcion){
+    //Persona [0]
+    // Lugar  [1]
+    // Ruta   [2]
     switch (opcion)
     {
     case 0:
     {
-        cout<<""<<endl;
+        cout<<"[1] - Ingresar nuevo persona al grafo"<<endl;
+        cout<<"[2] - Borrar persona al grafo."<<endl;
+        cout<<"[3] - Modificar persona que se encunetra en el grafo."<<endl;
+        int opcionPersona;
+        cin>>opcionPersona;
+        switch((int)opcionPersona - '0')
+        {
+            case 1:
+            {
+                string nombreP,inicioP,destinoP;
+                cout<<"Ingrese el nombre de la nueva persona: ";
+                cin>>nombreP;
+                cout<<"\nIngrese el nombre del lugar de inicio: ";
+                cin>>inicioP;
+                cout<<"\nIngrese el nombre del lugar de destino:";
+                cin>>destinoP;
+                Persona*nuevaPersona = insertarPersona(nombreP, inicioP, destinoP);
+                
+                if(nuevaPersona == NULL){
+                    cout<<"\nLa persona no se pudo agregar al grafo,intente nuevamente"<<endl;
+                }
+                
+                break;
+            }
+            case 2:
+            {
+                break;
+            }
+            case 3:
+            {
+                break;
+            }
+        }
         break;
     }
         
@@ -663,7 +698,6 @@ void dibujarMenu(int opcion)
  */
 void menu(){
      
-        pressKeyToContinue();
         int c;
         do {
             dibujarMenu(0);
@@ -673,8 +707,9 @@ void menu(){
             case 1:
                 {
                     dibujarMenu(1);
-                    int opcionUno = getchar();
-                    //mantenimientoListas();
+                    int opcionUno;
+                    cin>>opcionUno;
+                    mantenimientoListas(opcionUno);
                     break;
                 }
             case 2:
@@ -703,35 +738,7 @@ void menu(){
 
 int main()
 {
-    //menu();
-    
-    int indd;
-    indd=rand()%100;
-    cout<<indd<<"hola"<<endl;
-
-    insertarLugar("San Jose");
-    insertarLugar("Heredia");
-    insertarLugar("Alajuela");
-    insertarLugar("SC");
-    insertarLugar("Naranjo");
-
-    Persona* p1= insertarPersona("Juan", "San Jose", "Heredia");
-
-//    insertarLugar("Heredia");
-//    insertarLugar("Alajuela");
-//
-    insertarRuta("San Jose", "Naranjo","12");
-    insertarRuta("San Jose", "Alajuela", "13");
-    insertarRuta("San Jose", "Heredia","12");
-    
-    insertarRuta("San Jose", "SC", "13");
-
-//    //insertarRuta("San Jose", "Alajuela","12");
-//    profundidad(l1);
-//    amplitud();
-
-    avanzarAleatorio(p1);
-    
+    menu();
 
     return 0;
 }
