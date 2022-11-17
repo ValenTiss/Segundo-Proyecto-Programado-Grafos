@@ -11,6 +11,9 @@
 
 using namespace std;
 
+//Definiciones para poder recorrer rutas
+#define INF 999
+
 /**
  *Estructura lugar simboliza los lugares presentes en el
  */
@@ -200,6 +203,13 @@ bool buscarRuta(struct Lugar *origen, string destino){
     return existeRuta;
 }
 
+/**
+ Metodo para contar cuantas rutas existen en un
+ */
+
+int rutasQty(Lugar* lugar){
+    return 0;
+}
 
 /**
  *Metodo para mostrar en consola todas las rutas con su debido tiempo de recorrido,este metodo es recursivo.
@@ -561,6 +571,22 @@ void avanzarAleatorio(Persona* persona){
     
 }
 
+
+/**
+ *Metodo  para encontrar la ruta mas corta hacia un destino
+ *@param persona Objeto tipo persona la cual quiere tomar la ruta corta.
+ */
+void rutaCortaDestino(Persona *persona){
+    Lugar*lugarExaminar = persona->lugarInicio;
+    
+    
+    
+}
+
+/**
+ *Metodo para interactuar con el usuario
+ *@param opcion Opcion ingresada por el usuario a ejecutar
+ */
 void mantenimientoListas(int opcion){
     switch (opcion)
     {
@@ -678,6 +704,7 @@ void menu(){
 int main()
 {
     //menu();
+    
     int indd;
     indd=rand()%100;
     cout<<indd<<"hola"<<endl;
