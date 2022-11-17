@@ -706,6 +706,7 @@ int main()
     //menu();
     
     int indd;
+    srand((unsigned int)time(NULL));
     indd=rand()%100;
     cout<<indd<<"hola"<<endl;
 
