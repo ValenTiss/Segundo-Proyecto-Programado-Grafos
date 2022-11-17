@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <time.h>
 
 using namespace std;
 
@@ -563,12 +564,15 @@ void avanzarAleatorio(Persona* persona){
                 cout << "lugares"<<lugares[i] <<endl;
             }
 
-
-    //ind=rand()%(lugares.size()-0+1)+0;
+    srand((unsigned int)time(NULL));
+    ind=rand()%lugares.size();
     //cout<<ind<<"hola"<<endl;
     cout<<lugares.size()<<endl;
-    cout<<" el lugar escojido es "<<lugares[1]<<endl;//Valentin aca tiene que ir el valor aleatorio para escojer un lugar en la lista
-    
+    cout<<" el lugar escojido es "<<lugares[ind]<<endl;//Valentin aca tiene que ir el valor aleatorio para escojer un lugar en la lista
+    string lugarSet= lugares[ind];
+
+    persona->lugarActual=getLugar(lugarSet);
+    cout<<persona->lugarActual->lugar<<endl;
 }
 
 
@@ -705,10 +709,10 @@ int main()
 {
     //menu();
     
-    int indd;
-    srand((unsigned int)time(NULL));
-    indd=rand()%100;
-    cout<<indd<<"hola"<<endl;
+   // int indd;
+    //srand((unsigned int)time(NULL));
+    //indd=rand()%100;
+   // cout<<indd<<"hola"<<endl;
 
     insertarLugar("San Jose");
     insertarLugar("Heredia");
