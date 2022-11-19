@@ -748,6 +748,17 @@ void rutaCortaDestino(Persona *persona){
     }
 }
 
+bool pressKeyToContinue(){
+    cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
+    cout<<"Presione alguna tecla para limpiar ...";
+    char c = getchar();
+    if((int)c != 27){
+        cout<<"\x1B[2J\x1B[H";
+        return false;
+    }
+    return true;
+}
+
 /**
  *Metodo para interactuar con el usuario
  *@param opcion Opcion ingresada por el usuario a ejecutar
@@ -1081,21 +1092,6 @@ void reportes(int opcion){
 
 }
 
-
-
-
-
-
-bool pressKeyToContinue(){
-    cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
-    cout<<"Presione alguna tecla para limpiar ...";
-    char c = getchar();
-    if((int)c != 27){
-        cout<<"\x1B[2J\x1B[H";
-        return false;
-    }
-    return true;
-}
 /**
  * Metodo para dibujar menu
  * 
