@@ -204,13 +204,68 @@ bool buscarRuta(struct Lugar *origen, string destino){
 }
 
 /**
- Metodo para contar cuantas rutas existen en un
+ *Metodo para contar cuantas lugares existen en el grafo
+ *@return Entero que contiene la cantidad de lugares existentes en el grafo.
  */
 
-int rutasQty(Lugar* lugar){
-    return 0;
+int sizeGrafo(){
+    int i = 0;
+    Lugar* temp = grafo;
+    while(temp != NULL){
+        i += 1;
+        temp = temp -> sigV;
+    }
+    return i;
 }
 
+/**
+ *Metodo para encontrar la posicion.
+ *@param pos Posicion a buscar.
+ *
+ *@return Lugar  encontrado
+ */
+Lugar* posicionLugar(int pos){
+    Lugar* temp = grafo;
+    int i = 0;
+    while(temp != NULL){
+        if(pos == i)
+            return temp;
+        i += 1;
+        temp = temp -> sigV;
+    }
+    return NULL;
+}
+
+/**
+ *Metodo para conocer  que posicion ocupa un lugar en el grafo
+ *@param lugar Lugar el cual queremos determinar su posicion
+ *@return Entero que tiene la posicion.
+ */
+int posicionLugar(Lugar* lugar){
+    int i = 0;
+    Lugar* temp = grafo;
+    while(temp != NULL){
+        if(temp->lugar == lugar->lugar)
+            return i;
+        i += 1;
+        temp = temp -> sigV;
+    }
+    return i;
+}
+/**
+ *Metodo para contar cuantas rutas existen en un lugar designado
+ *@param lugar Lugar que se eliigio para hacer el conteo de rutas.
+ *@return Entero con el numero de rutas existentes en un lugar
+ */
+int sizeLugar(Lugar* lugar){
+    Ruta*TempR = lugar -> subLArcos;
+    int i = 0;
+    while(TempR != NULL){
+        i += 1;
+        TempR = TempR -> sigAr;
+    }
+    return i;
+}
 /**
  *Metodo para mostrar en consola todas las rutas con su debido tiempo de recorrido,este metodo es recursivo.
  *@param anexo Lugar de origen.
@@ -533,6 +588,18 @@ void CargarDatosRuta(){
     insertarRuta("origen","destino","33");
 }
 
+
+
+int minimo(int a,int b)
+{
+    if(a>b)
+        return b;
+    else
+        return a;
+}
+
+
+
 /**
  *Metodo para que una persona avance de manera aleatoria
  *@param persona Persona la cual se va a mover
@@ -577,10 +644,80 @@ void avanzarAleatorio(Persona* persona){
  *@param persona Objeto tipo persona la cual quiere tomar la ruta corta.
  */
 void rutaCortaDestino(Persona *persona){
-    Lugar*lugarExaminar = persona->lugarInicio;
+    //Pasamos las rutas a una matriz
+    int N = sizeGrafo();
+    int A[N][N];
+    Lugar* temp =  grafo;
+    int y = 0;
+    while(temp != NULL){
+        Ruta*tempRutas = temp->subLArcos;
+
+        for(int x = 0;x <=  sizeLugar(temp)+1;x++)
+        {
+            if(tempRutas == NULL){
+                A[y][x] = INF;
+                
+            }else{
+                A[y][x] = stoi(tempRutas->tiempoRecorrido);
+                tempRutas = tempRutas->sigAr;
+            }
+        }
+        temp = temp->sigV;
+        y += 1;
+    }
     
     
+    int D[N][N],i,j,vi,min,ve,S[N];
     
+    
+    vi = posicionLugar(persona->lugarInicio);
+    S[vi-1] = 1;
+    
+    for(i = 0;i<N;i++){
+        D[0][i] = A[vi-1][i];
+    }
+    
+    for(j=0;j<N-1;j++)
+    {
+        min=INF;
+        ve=0;
+        for(i=0;i<N;i++)
+        {
+            if(D[j][i]<min && S[i]==0)//el mas pequeÒo de todos los no visitados
+            {
+                min=D[j][i];
+                ve=i;
+            }
+        }
+        S[ve]=1;
+        
+        for(i=0;i<N;i++)
+        {
+            D[j+1][i]=minimo(D[j][i],D[j][ve]+A[ve][i]);
+            
+        }
+        
+    }
+    
+
+    cout << "\t";
+    for(i=0;i<N;i++)
+        cout << (i+1) << "\t";
+
+    cout << endl;
+
+    for(j=0;j<N;j++)
+    {
+        cout << (j+1) << "\t";
+        for(i=0;i<N;i++)
+        {
+            if(D[j][i]==INF)
+                cout << "INF\t";
+            else
+                cout << D[j][i] << "\t";
+        }
+        cout << endl;
+    }
 }
 
 /**
@@ -742,7 +879,15 @@ void menu(){
 
 int main()
 {
-    menu();
-
+    //menu();
+    insertarLugar("SJ");
+    insertarLugar("Heredia");
+    insertarLugar("Alajuela");
+    insertarRuta("SJ", "Heredia", "1");
+    insertarRuta("SJ", "Alajuela", "17");
+    insertarRuta("Heredia", "Alajuela", "4");
+    
+    rutaCortaDestino(insertarPersona("valentin", "SJ", "Heredia"));
+    int pos = posicionLugar(getLugar("Alajuela"));
     return 0;
 }
