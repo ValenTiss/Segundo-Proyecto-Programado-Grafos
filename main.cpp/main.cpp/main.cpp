@@ -537,59 +537,66 @@ void CargarDatosRuta(){
 /**
  *Metodo para que una persona avance de manera aleatoria a traves del grafo
  *@param persona Persona la cual se va a mover
+ *@param lugarAnterior Si se llama al metodo, este parametro debe ser un string vacio ("").
  */
-void avanzarAleatorio(Persona* persona){
+void avanzarAleatorio(Persona* persona, string lugarAnterior){
 
     Lugar* inicio= persona->lugarActual;
-    Lugar* listaDeDestinos;
     vector<string> lugares;
     int ind;
     string lugarSet;
     string lugarAnt;
 
+    cout<<endl;
     cout<<"Lugar actual "<<inicio->lugar<<endl;
-
+    
     if((inicio == NULL) or (inicio->siVisitado == true)){
         cout<<endl;
         return;
     }
     
     inicio->siVisitado = true;
-
+    lugarAnt=lugarAnterior;
     struct Ruta * tempR = inicio->subLArcos;
     while(tempR != NULL){
-        lugares.push_back(tempR->destino);
-        tempR = tempR->sigAr;
-         
-        
-    }
-
-    //
-    
-        for (size_t i = 0; i < lugares.size(); i++) {
-
-            cout << inicio->lugar<<" Desde el lugar actual hay ruta hacia "<<lugares[i] <<endl;
-        }
-
-        srand((unsigned int)time(NULL));
-        ind=rand()%lugares.size();
-        cout<<"Cantidad de lugares desde el vertice actual "<<lugares.size()<<endl;
-        cout<<"El lugar escojido es "<<lugares[ind]<<endl;
-
-        if(inicio->lugar!=lugares[ind]){
-            
-            lugarSet= lugares[ind];
-                
-            persona->lugarActual=getLugar(lugarSet);
-            lugares.clear();
-            //cout<<"Lugar actual "<<persona->lugarActual->lugar<<endl;
+        cout<<"Hay ruta entre: "<<inicio->lugar<<" y "<<tempR->destino<<endl;
+        if(tempR->destino!=lugarAnt){
+            lugares.push_back(tempR->destino);    
         }
         else{
-            cout<<"No se puede devolver"<<endl;
+            cout<<"No se puede viajar hacia: "<<tempR->destino<<", porque es el lugar anterior."<<endl;
         }
+        tempR = tempR->sigAr;
+            ///
+            
+    }
+    if(lugares.size()>=1){
+        srand((unsigned int)time(NULL));
+        ind=rand()%lugares.size();
+    }else{
+        cout<<"No hay mas vertices hacia donde ir desde el lugar actual. Fin del recorrido.";
+        cout<<endl;
+        return;
+    }
+    for (size_t x = 0; x < lugares.size(); x++) {
+        cout <<"Desde "<<inicio->lugar<<" se puede viajar hacia: "<<lugares[x] <<endl;
+    }
+    for (size_t i = 0; i < lugares.size(); i++) {
+        cout<<"Cantidad de lugares a los que se puede viajar desde el vertice actual: "<<lugares.size()<<endl;
+        cout<<"El lugar escojido es "<<lugares[ind]<<endl;
+        lugarAnt=inicio->lugar;
+        cout<<"Lugar anterior: "<<lugarAnt<<endl;
         
-        avanzarAleatorio(persona);
-
+        if(lugarAnt!=lugares[ind]){
+            lugarSet= lugares[ind];    
+            persona->lugarActual=getLugar(lugarSet);
+            lugares.clear();
+            inicio=persona->lugarActual;
+            if (inicio->lugar!=lugarAnt){
+                avanzarAleatorio(persona, lugarAnt);
+            }      
+        }
+    }
 }
 
 
@@ -736,6 +743,7 @@ int main()
     insertarLugar("Alajuela");
     insertarLugar("SC");
     insertarLugar("Naranjo");
+    insertarLugar("Cartago");
 
     Persona* p1= insertarPersona("Juan", "San Jose", "Heredia");
 
@@ -747,12 +755,14 @@ int main()
     insertarRuta("Naranjo", "SC", "13");
     insertarRuta("Alajuela", "Naranjo", "13");
     insertarRuta("Heredia", "Alajuela","12");
+    insertarRuta("San Jose", "Cartago","12");
+    insertarRuta("Heredia", "Cartago","12");
 
 //    //insertarRuta("San Jose", "Alajuela","12");
     //profundidad(l1);
 //    amplitud();
 
-    avanzarAleatorio(p1);
+    avanzarAleatorio(p1,"");
     
 
     return 0;
