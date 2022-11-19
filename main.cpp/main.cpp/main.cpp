@@ -946,6 +946,7 @@ void mantenimientoListas(int opcion){
 
     }
     }
+    pressKeyToContinue();
 }
 
 void consultas(int opcion){
@@ -1018,12 +1019,7 @@ void reportes(int opcion){
     {
         cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
         amplitud();
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-
+        break;
 
     }
 
@@ -1038,10 +1034,7 @@ void reportes(int opcion){
 
         //profundidad();
         //metodo
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
     }
 
@@ -1049,11 +1042,7 @@ void reportes(int opcion){
     {
         cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
         //metodo
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
     }
 
@@ -1063,11 +1052,7 @@ void reportes(int opcion){
         cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
         cin>>nombreP;
         imprimirAmistades(nombreP);
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
     }
 
@@ -1075,11 +1060,7 @@ void reportes(int opcion){
     {
         cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
         //metodo
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
         
     }
@@ -1088,14 +1069,9 @@ void reportes(int opcion){
     {
         cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
         //metodo
-        
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-
-        
+        break;      
     }
+
 
 
 
