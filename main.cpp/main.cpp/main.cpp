@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstdlib>
 #include <time.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -561,14 +562,14 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
     while(tempR != NULL){
         cout<<"Hay ruta entre: "<<inicio->lugar<<" y "<<tempR->destino<<endl;
         if(tempR->destino!=lugarAnt){
-            lugares.push_back(tempR->destino);    
+            lugares.push_back(tempR->destino);  
+            tempR = tempR->sigAr;  
         }
         else{
             cout<<"No se puede viajar hacia: "<<tempR->destino<<", porque es el lugar anterior."<<endl;
+            tempR = tempR->sigAr;
         }
-        tempR = tempR->sigAr;
-            ///
-            
+
     }
     if(lugares.size()>=1){
         srand((unsigned int)time(NULL));
@@ -594,6 +595,107 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
             inicio=persona->lugarActual;
             if (inicio->lugar!=lugarAnt){
                 avanzarAleatorio(persona, lugarAnt);
+            }      
+        }
+    }
+}
+
+/**
+ *Metodo para que una persona avance al vertice que le queda mas cerca desde su posicion act
+ *@param persona Persona la cual se va a mover
+ *@param lugarAnterior Si se llama al metodo, este parametro debe ser un string vacio ("").
+ */
+void avanzarVerticeCercano(Persona* persona, string lugarAnterior){
+
+    Lugar* inicio= persona->lugarActual;
+    //Lugar* distancia= persona->lugarActual->lugar;
+    vector<string> lugares;
+    vector<int> lugaresTiempo;
+    int *ind;
+    string lugarSet;
+    string lugarAnt;
+
+    cout<<endl;
+    cout<<"Lugar actual "<<inicio->lugar<<endl;
+    
+    if((inicio == NULL) or (inicio->siVisitado == true)){
+        cout<<endl;
+        return;
+    }
+    
+    inicio->siVisitado = true;
+    lugarAnt=lugarAnterior;
+    struct Ruta * tempR = inicio->subLArcos;
+    while(tempR != NULL){
+        Lugar* lugarDes=getLugar(tempR->destino);
+        cout<<"Hay ruta entre: "<<inicio->lugar<<" y "<<tempR->destino<<", tiempo necesario: "<<tempR->tiempoRecorrido<<endl;
+        if(tempR->destino!=lugarAnt){
+
+            lugares.push_back(tempR->destino); 
+            lugaresTiempo.push_back(stoi(tempR->tiempoRecorrido));
+            tempR = tempR->sigAr;   
+        }
+        else{
+            cout<<"No se puede viajar hacia: "<<tempR->destino<<", porque es el lugar anterior."<<endl;
+            tempR = tempR->sigAr;
+        }
+       
+            ///
+            
+    }
+
+////
+/*
+struct Lugar *tempL = grafo;
+
+        while(tempL != NULL){//RECORRE LA LISTA DE VERTICES
+            cout<<"\n Lugar: "<<tempL->lugar<<"->\t";
+            struct Ruta *tempR = tempL->subLArcos;
+
+            while(tempR != NULL){//RECORRE LOS ARCOS DE LA LISTA DE ARCOS DEL VERTICE
+                    cout<<"desde "<<tempL->lugar<<" hasta "<<tempR->destino<<" se tarda "<<tempR->tiempoRecorrido<<" minutos ,  ";
+                tempR = tempR->sigAr;
+            }
+            tempL = tempL->sigV;
+        }
+*/
+/////
+
+    if(lugares.size()>=1){
+ 
+        int &min = *min_element(begin(lugaresTiempo), end(lugaresTiempo));
+        //int *max = std::max_element(std::begin(arr), std::end(arr));
+    
+        cout << "The min element is " << min << std::endl;
+        //std::cout << "The max element is " << *max << std::endl;
+
+        srand((unsigned int)time(NULL));
+       int ind= min;
+
+    }else{
+        cout<<"No hay mas vertices hacia donde ir desde el lugar actual. Fin del recorrido.";
+        cout<<endl;
+        return;
+    }
+    for (size_t q = 0; q < lugaresTiempo.size(); q++) {
+        cout <<"Tiempo: "<<lugaresTiempo[q] <<endl;
+    }
+    for (size_t x = 0; x < lugares.size(); x++) {
+        cout <<"Desde "<<inicio->lugar<<" se puede viajar hacia: "<<lugares[x] <<endl;
+    }
+    for (size_t i = 0; i < lugares.size(); i++) {
+        cout<<"Cantidad de lugares a los que se puede viajar desde el vertice actual: "<<lugares.size()<<endl;
+        cout<<"El lugar escojido es "<<lugaresTiempo[ind]<<endl;
+        lugarAnt=inicio->lugar;
+        cout<<"Lugar anterior: "<<lugarAnt<<endl;
+        
+        if(lugarAnt!=lugares[ind]){
+            lugarSet= lugares[ind];    
+            persona->lugarActual=getLugar(lugarSet);
+            lugares.clear();
+            inicio=persona->lugarActual;
+            if (inicio->lugar!=lugarAnt){
+                avanzarVerticeCercano(persona, lugarAnt);
             }      
         }
     }
@@ -751,18 +853,19 @@ int main()
 //    insertarLugar("Alajuela");
 //
 
-    insertarRuta("San Jose", "Heredia","12");
+    insertarRuta("San Jose", "Heredia","2");
     insertarRuta("Naranjo", "SC", "13");
     insertarRuta("Alajuela", "Naranjo", "13");
-    insertarRuta("Heredia", "Alajuela","12");
-    insertarRuta("San Jose", "Cartago","12");
+    insertarRuta("Heredia", "Alajuela","20");
+    insertarRuta("San Jose", "Cartago","8");
     insertarRuta("Heredia", "Cartago","12");
 
 //    //insertarRuta("San Jose", "Alajuela","12");
     //profundidad(l1);
 //    amplitud();
 
-    avanzarAleatorio(p1,"");
+    avanzarVerticeCercano(p1,"");
+    //avanzarAleatorio(p1,"");
     
 
     return 0;
