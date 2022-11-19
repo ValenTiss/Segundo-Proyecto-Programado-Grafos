@@ -588,19 +588,21 @@ void rutaCortaDestino(Persona *persona){
  *@param opcion Opcion ingresada por el usuario a ejecutar
  */
 void mantenimientoListas(int opcion){
-    //Persona [0]
-    // Lugar  [1]
-    // Ruta   [2]
+    //Persona [1]
+    // Lugar  [2]
+    // Ruta   [3]
     switch (opcion)
     {
-    case 0:
+    case 1:
     {
         cout<<"[1] - Ingresar nuevo persona al grafo"<<endl;
         cout<<"[2] - Borrar persona al grafo."<<endl;
         cout<<"[3] - Modificar persona que se encunetra en el grafo."<<endl;
         int opcionPersona;
         cin>>opcionPersona;
-        switch((int)opcionPersona - '0')
+
+
+        switch(opcionPersona)
         {
             case 1:
             {
@@ -614,29 +616,334 @@ void mantenimientoListas(int opcion){
                 Persona*nuevaPersona = insertarPersona(nombreP, inicioP, destinoP);
                 
                 if(nuevaPersona == NULL){
-                    cout<<"\nLa persona no se pudo agregar al grafo,intente nuevamente"<<endl;
-                }
-                
+                    cout<<"\nLa persona no se pudo agregar al grafo, intente nuevamente"<<endl;
+                    
+                };
+
+                string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
                 break;
             }
+
             case 2:
             {
+                string nombreP, esperar;
+                cout<<"Ingrese el nombre de la persona que desea eliminar: ";
+                cin>>nombreP;
+                borrarPersona(nombreP);
+
+
+
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
                 break;
             }
             case 3:
-            {
+            {   
+                string nombreP, esperar;
+                cout<<"Ingrese el nombre de la persona que desea modificar: ";
+                cin>>nombreP;
+                //modificarPersona(nombreP);
+
+
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
                 break;
             }
+
+
         }
-        break;
     }
-        
-        
-    case 1:
-    default:
-        break;
+
+    case 2:
+    {
+        cout<<"[1] - Ingresar nuevo lugar al grafo"<<endl;
+        cout<<"[2] - Borrar lugar al grafo."<<endl;
+        cout<<"[3] - Modificar lugar que se encunetra en el grafo."<<endl;
+        int opcionLugar;
+        cin>>opcionLugar;
+
+
+        switch(opcionLugar)
+        {
+            case 1:
+            {
+                string nombreL;
+                cout<<"Ingrese el nombre del lugar: ";
+                cin>>nombreL;
+                Lugar*nuevoLugar = insertarLugar(nombreL);
+                
+                if(nuevoLugar == NULL){
+                    cout<<"\nEl lugar no se pudo agregar, intente nuevamente"<<endl;
+                    
+                };
+
+                string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+            }
+
+            case 2:
+            {
+                string nombreL, esperar;
+                cout<<"Ingrese el nombre del lugar que desea eliminar: ";
+                cin>>nombreL;
+                //borrarLugar(nombreL);
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+            }
+
+            case 3:
+            {   
+                string nombreL, esperar;
+                cout<<"Ingrese el nombre del lugar que desea modificar: ";
+                cin>>nombreL;
+                //modificarLugar(nombreL);
+
+
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+            }
+
+
+        }
+    }
+
+
+
+    case 3:
+    {
+        cout<<"[1] - Ingresar nueva ruta al grafo"<<endl;
+        cout<<"[2] - Borrar ruta al grafo."<<endl;
+        cout<<"[3] - Modificar ruta que se encunetra en el grafo."<<endl;
+        int opcionRuta;
+        cin>>opcionRuta;
+
+
+        switch(opcionRuta)
+        {
+            case 1:
+            {
+                string nombreA, nombreC, distancia;
+                cout<<"Ingrese el nombre del anexo: ";
+                cin>>nombreA;
+                cout<<"Ingrese el nombre del conexo: ";
+                cin>>nombreC;
+                cout<<"Ingrese la distancia: ";
+                cin>>distancia;
+
+                Ruta*nuevaRuta = insertarRuta(nombreA,nombreC,distancia);
+                
+                if(nuevaRuta == NULL){
+                    cout<<"\nLa ruta no se pudo agregar, intente nuevamente"<<endl;
+                    
+                };
+
+                string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+            }
+
+            case 2:
+            {
+                string nombreL, esperar;
+                cout<<"Ingrese el nombre del lugar que desea eliminar: ";
+                cin>>nombreL;
+
+
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+            }
+            
+            case 3:
+            {   
+                string nombreP, esperar;
+                cout<<"Ingrese el nombre de la persona que desea modificar: ";
+                cin>>nombreP;
+                //modificarLugar(nombreL);
+
+
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+            }
+
+
+        }
+
+
+
+    }
     }
 }
+
+void consultas(int opcion){
+    switch (opcion)
+    {
+
+    case 1:
+    {
+        cout<<endl<<"Estado de las personas en cada avance: "<<endl;
+        //metodo
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+
+    }
+
+    case 2:
+    {
+        cout<<endl<<"La persona con mas amigos: "<<endl;
+        //metodo
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+    }
+
+    case 3:
+    {
+        cout<<endl<<"Primera persona en terminar la caminata: "<<endl;
+        //metodo
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+    }
+
+    case 4:
+    {
+
+        cout<<endl<<"Ultima persona en terminar la caminata: "<<endl;
+        //metodo
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+    }
+
+
+
+}
+
+}
+
+
+void reportes(int opcion){
+
+    switch (opcion)
+    {
+
+    case 1:
+    {
+        cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
+        amplitud();
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+
+    }
+
+    case 2:
+    {
+
+        cout<<endl<<"...Profundidad del grafo... "<<endl;
+        cout<<endl<<"Los lugares son los siguientes: "<<endl;
+        //imprimirLugares();
+        cout<<endl;
+        cout<<endl<<"Indique cual vertice(Lugar) desea ver: "<<endl;
+
+        //profundidad();
+        //metodo
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+    }
+
+    case 3:
+    {
+        cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
+        //metodo
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+    }
+
+    case 4:
+    {
+        string nombreP;
+        cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
+        cin>>nombreP;
+        imprimirAmistades(nombreP);
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+    }
+
+    case 5:
+    {
+        cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
+        //metodo
+
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+        
+    }
+
+    case 6:
+    {
+        cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
+        //metodo
+        
+        string esperar;
+                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                cin>>esperar;
+                break;
+
+        
+    }
+
+
+
+}
+
+
+
+}
+
+
+
+
+
 
 bool pressKeyToContinue(){
     cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
@@ -719,13 +1026,17 @@ void menu(){
             case 2:
                 {
                     dibujarMenu(2);
-                    int opcionDos = getchar();
+                    int opcionDos;
+                    cin>>opcionDos;
+                    consultas(opcionDos);
                     break;
                 }
             case 3:
                 {
                     dibujarMenu(3);
-                    int opcionTres = getchar();
+                    int opcionTres;
+                    cin>>opcionTres;
+                    reportes(opcionTres);
                     break;
                 }
             default:
