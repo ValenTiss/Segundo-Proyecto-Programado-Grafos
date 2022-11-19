@@ -916,9 +916,9 @@ void mantenimientoListas(int opcion){
 
             case 2:
             {
-                string nombreL, esperar;
-                cout<<"Ingrese el nombre del lugar que desea eliminar: ";
-                cin>>nombreL;
+                string nombreR, esperar;
+                cout<<"Ingrese el nombre de la ruta que desea eliminar: ";
+                cin>>nombreR;
 
 
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
@@ -928,10 +928,10 @@ void mantenimientoListas(int opcion){
             
             case 3:
             {   
-                string nombreP, esperar;
-                cout<<"Ingrese el nombre de la persona que desea modificar: ";
-                cin>>nombreP;
-                //modificarLugar(nombreL);
+                string nombreR, esperar;
+                cout<<"Ingrese el nombre de la ruta que desea modificar: ";
+                cin>>nombreR;
+                //modificarRuta(nombreR);
 
 
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
