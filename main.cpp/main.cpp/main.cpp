@@ -190,18 +190,34 @@ bool buscarRuta(struct Lugar *origen, string destino){
 
         if(origen->lugar == destino){
                 existeRuta= true;
-                return existeRuta;
+                 return existeRuta;
         }
         origen->siVisitado =true;
 
     struct Ruta *tempA =origen->subLArcos;
     while(tempA != NULL){
-        buscarRuta(getLugar(tempA->tiempoRecorrido), destino);
+
+        buscarRuta(getLugar(tempA->destino), destino);
         tempA = tempA->sigAr;
     }
-    return existeRuta;
+    return NULL;
 }
 
+/**
+ *Metodo para mostrar en consola todas aquellas personas las cuales no encontraron ruta para llegar a su destino.*
+ */
+
+void personasSinRutas(){
+    Persona*tempP = listaDePersonas;
+    while (tempP != NULL) {
+        buscarRuta(tempP->lugarInicio, tempP->lugarDestino->lugar);
+        if(!existeRuta)
+            cout<<"La persona con el nombre "<< tempP->nombre << " no encontro ruta para llegar a su destino."<<endl;
+        existeRuta = false;
+        tempP = tempP -> sigP;
+    }
+    
+}
 /**
  *Metodo para contar cuantas lugares existen en el grafo
  *@return Entero que contiene la cantidad de lugares existentes en el grafo.
@@ -306,6 +322,7 @@ bool imprimirRutaconDistancias(struct Lugar *anexo, string destino, string ruta,
         anexo->siVisitado =false;
     return false;
 }
+
 
 //variables globales
 string rutaMenor = "";
@@ -656,13 +673,13 @@ void CargarDatos(){
 
     insertarRuta("Heredia", "Alajuela", "4");
     insertarRuta("Heredia", "San Carlos", "4");
-    insertarRuta("San Jose", "Heredia","12");;
-    insertarRuta("San Jose", "Alajuela","23");
+    //insertarRuta("San Jose", "Heredia","12");;
+    //insertarRuta("San Jose", "Alajuela","23");
     insertarRuta("San Jose", "San Carlos","5");
     
     insertarPersona("Valentin", "San Jose", "Heredia");
     insertarPersona("Juan", "Heredia", "San Carlos");
-    insertarPersona("Jorge", "San Carlos", "Alajuela");
+    insertarPersona("Jorge", "San Jose", "San Carlos");
     
     agregarAmistadPersona("Valentin", "Juan");
     
@@ -1087,12 +1104,13 @@ void mantenimientoListas(int opcion){
 }
 
 void consultas(int opcion){
+    cout<<"[1] -  Mostrar el estado de las personas en cada avance"<<endl;
+    cout<<"[2] -  Persona con mas amigos"<<endl;
+    cout<<"[3] -  Primera persona en terminar la caminata"<<endl;
+    cout<<"[4] -  Ultima persona en terminar la camita"<<endl;
     switch (opcion)
     {
-        cout<<"[1] -  Mostrar el estado de las personas en cada avance"<<endl;
-        cout<<"[2] -  Persona con mas amigos"<<endl;
-        cout<<"[3] -  Primera persona en terminar la caminata"<<endl;
-        cout<<"[4] -  Ultima persona en terminar la camita"<<endl;
+       
 
         case 1:
         {
@@ -1138,7 +1156,12 @@ void consultas(int opcion){
 
 
 void reportes(int opcion){
-
+    cout<<"[1] -  Imprimir grafo en amplitud, con toda la info almacenada"<<endl;
+    cout<<"[2] -  Imprimir en profundidad el grafo ( se indica cual vertice de incio)"<<endl;
+    cout<<"[3] -  Imprimir las rutas para las personas que avanzan de la forma 3 y 4"<<endl;
+    cout<<"[4] -  Imprimir la cantidad y el nombre de los amigos que logro realizar una persona"<<endl;
+    cout<<"[5] -  Quien o quienes no encontraron ningun amigo"<<endl;
+    cout<<"[6] -  Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa"<<endl;
     switch (opcion)
     {
 
@@ -1152,14 +1175,18 @@ void reportes(int opcion){
 
         case 2:
         {
-
+            string nombreLugar;
             cout<<endl<<"...Profundidad del grafo... "<<endl;
             cout<<endl<<"Los lugares son los siguientes: "<<endl;
-            //imprimirLugares();
-            cout<<endl;
-            cout<<endl<<"Indique cual vertice(Lugar) desea ver: "<<endl;
-            //profundidad();
-            //metodo
+            imprimirLugares();
+            cout<<endl<<"Indique cual vertice(Lugar) desea ver: ";
+            cin>>nombreLugar;
+            while(getLugar(nombreLugar) == NULL){
+                cout<<"Este lugar no existe ,intente nuevamente: ";
+                cin>>nombreLugar;
+            }
+            
+            profundidad(getLugar(nombreLugar));
             break;
 
         }
@@ -1194,7 +1221,7 @@ void reportes(int opcion){
         case 6:
         {
             cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
-            //metodo
+            personasSinRutas();
             break;
         }
     }
@@ -1303,7 +1330,5 @@ int main()
 {
     //menu();
     CargarDatos();
-    personasConMasAmigos();
-    personasSinAmigos();
     return 0;
 }
