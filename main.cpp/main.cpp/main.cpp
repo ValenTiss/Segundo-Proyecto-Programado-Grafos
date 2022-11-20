@@ -536,7 +536,7 @@ void CargarDatosRuta(){
 }
 
 /**
- *Metodo para que una persona avance de manera aleatoria a traves del grafo
+ *Metodo para que una persona avance de manera aleatoria a traves del grafo. No se puede devolver a su posicion anterior.
  *@param persona Persona la cual se va a mover
  *@param lugarAnterior Si se llama al metodo, este parametro debe ser un string vacio ("").
  */
@@ -552,7 +552,7 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
     cout<<"Lugar actual "<<inicio->lugar<<endl;
     
     if((inicio == NULL) or (inicio->siVisitado == true)){
-        cout<<endl;
+        cout<<"Fin del recorrido"<<endl;
         return;
     }
     
@@ -601,25 +601,44 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
 }
 
 /**
- *Metodo para que una persona avance al vertice que le queda mas cerca desde su posicion act
+ *Metodo para buscar un numero dentro de un vector 
+ *@param b la lista donde se busca el numero
+ *@param bus el numero a buscar
+ *@return Retorna la posicion en la lista del numero buscado
+ */
+int buscarNumeroVector(vector<int> b,int bus){
+    int i,j;
+    j=-1,i=-1;
+
+    do{ i++;
+        if(b[i]==bus)
+            j=i;
+    }while((i<bus)&&(b[i]!=bus));
+    
+    return j;
+}
+
+/**
+ *Metodo para que una persona avance al vertice que le queda mas cerca desde su posicion actual. No se puede devolver a su posicion anterior.
  *@param persona Persona la cual se va a mover
  *@param lugarAnterior Si se llama al metodo, este parametro debe ser un string vacio ("").
  */
 void avanzarVerticeCercano(Persona* persona, string lugarAnterior){
 
     Lugar* inicio= persona->lugarActual;
-    //Lugar* distancia= persona->lugarActual->lugar;
     vector<string> lugares;
     vector<int> lugaresTiempo;
-    int *ind;
+    int ind;
     string lugarSet;
     string lugarAnt;
+    int c;
+    int mayor, menor;
 
     cout<<endl;
     cout<<"Lugar actual "<<inicio->lugar<<endl;
     
     if((inicio == NULL) or (inicio->siVisitado == true)){
-        cout<<endl;
+        cout<<"Fin del recorrido"<<endl;
         return;
     }
     
@@ -639,53 +658,29 @@ void avanzarVerticeCercano(Persona* persona, string lugarAnterior){
             cout<<"No se puede viajar hacia: "<<tempR->destino<<", porque es el lugar anterior."<<endl;
             tempR = tempR->sigAr;
         }
-       
-            ///
-            
+        
     }
 
-////
-/*
-struct Lugar *tempL = grafo;
+    menor = lugaresTiempo[0]; 
+    
+    for (c=0; c<lugaresTiempo.size(); c++){
 
-        while(tempL != NULL){//RECORRE LA LISTA DE VERTICES
-            cout<<"\n Lugar: "<<tempL->lugar<<"->\t";
-            struct Ruta *tempR = tempL->subLArcos;
-
-            while(tempR != NULL){//RECORRE LOS ARCOS DE LA LISTA DE ARCOS DEL VERTICE
-                    cout<<"desde "<<tempL->lugar<<" hasta "<<tempR->destino<<" se tarda "<<tempR->tiempoRecorrido<<" minutos ,  ";
-                tempR = tempR->sigAr;
-            }
-            tempL = tempL->sigV;
+        if (lugaresTiempo[c]< menor){
+        menor=lugaresTiempo[c];
         }
-*/
-/////
+    }
+
+    cout<<"El menor tiempo de recorrido es: "<< menor<<endl;
 
     if(lugares.size()>=1){
- 
-        int &min = *min_element(begin(lugaresTiempo), end(lugaresTiempo));
-        //int *max = std::max_element(std::begin(arr), std::end(arr));
-    
-        cout << "The min element is " << min << std::endl;
-        //std::cout << "The max element is " << *max << std::endl;
-
-        srand((unsigned int)time(NULL));
-       int ind= min;
-
+        ind= buscarNumeroVector(lugaresTiempo, menor);
     }else{
-        cout<<"No hay mas vertices hacia donde ir desde el lugar actual. Fin del recorrido.";
-        cout<<endl;
+        cout<<"No hay mas vertices hacia donde ir desde el lugar actual. Fin del recorrido."<<endl;
         return;
     }
-    for (size_t q = 0; q < lugaresTiempo.size(); q++) {
-        cout <<"Tiempo: "<<lugaresTiempo[q] <<endl;
-    }
-    for (size_t x = 0; x < lugares.size(); x++) {
-        cout <<"Desde "<<inicio->lugar<<" se puede viajar hacia: "<<lugares[x] <<endl;
-    }
+
     for (size_t i = 0; i < lugares.size(); i++) {
-        cout<<"Cantidad de lugares a los que se puede viajar desde el vertice actual: "<<lugares.size()<<endl;
-        cout<<"El lugar escojido es "<<lugaresTiempo[ind]<<endl;
+        cout<<"El lugar escojido es "<<lugares[ind]<<endl;
         lugarAnt=inicio->lugar;
         cout<<"Lugar anterior: "<<lugarAnt<<endl;
         
@@ -863,8 +858,9 @@ int main()
 //    //insertarRuta("San Jose", "Alajuela","12");
     //profundidad(l1);
 //    amplitud();
-
+    cout<<"Avance al vertice mas cercano."<<endl;
     avanzarVerticeCercano(p1,"");
+    //cout<<endl<<"Avance aleatorio."<<endl;
     //avanzarAleatorio(p1,"");
     
 
