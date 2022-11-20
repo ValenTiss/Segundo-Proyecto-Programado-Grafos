@@ -12,23 +12,23 @@
 
 using namespace std;
 
-//Definiciones para poder recorrer rutas
+//Definiciones para poder recorrer rutas.
 #define INF 999
 
 /**
- *Estructura lugar simboliza los lugares presentes en el
+ *Estructura de lugar, simboliza los lugares presentes en el grafo.
  */
 
-struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar
+struct Lugar{ //Creacion del Vertice con el lugar que los turistas van a visitar.
     string lugar;
-    struct Lugar * sigV; //Enlace de los vertices en una lista
-    struct Ruta *subLArcos;//Sublista de arcos
+    struct Lugar * sigV; //Enlace de los vertices en una lista.
+    struct Ruta *subLArcos;//Sublista de arcos.
 
     bool siVisitado;
 
     /**
-     * Metodo constructor de la estructura lugar
-     * @param lug Nombre del lugar
+     * Metodo constructor de la estructura lugar.
+     * @param lug Nombre del lugar.
      */ 
     Lugar (string lug){
         lugar = lug;
@@ -48,8 +48,8 @@ struct Ruta{
     string destino;
 
     /**
-     * Metodo constructor de la estructra ruta
-      * @param tr Tiempo que tarda en recorrerse esta ruta
+     * Metodo constructor de la estructra ruta.
+      * @param tr Tiempo que tarda en recorrerse esta ruta.
      */ 
     Ruta(string tr,string destino){
         tiempoRecorrido = tr;
@@ -60,12 +60,13 @@ struct Ruta{
 
 };
 
-struct Lugar *grafo; // Apuntador del incio del grafo
+struct Lugar *grafo; // Apuntador del incio del grafo.
+
 
 /**
- * Estrucutra que simboliza a las personas.
+ * Estrucutra que simboliza a las personas que se encontraran presentes en el grafo.
  */ 
-struct Persona{//Creacion de la persona (doble) con su lista de amigos
+struct Persona{//Creacion de la persona (doble) con su lista de amigos.
     string nombre;
     Persona* antP;
     Persona* sigP;
@@ -77,12 +78,13 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
     struct Lugar* lugaresVisitados;
     
     /**
-     * Metodo constructor de la estructura persona
-     * @param n Nombre de la persona
-     * @param lugarInicio Lugar de inicio de esta persona
-     * @param lugarActual Lugar de actual de esta persona
-     * @param lugarDestino Lugar de destino de esta persona
+     * Metodo constructor de la estructura de persona.
+     * @param n Nombre de la persona.
+     * @param lugarInicio Lugar de inicio de esta persona.
+     * @param lugarDestino Lugar de destino de esta persona.
+     * 
      */ 
+
     Persona(string n,struct Lugar* lugarInicio ,Lugar* lugarDestino){
         nombre = n;
         antP=NULL;
@@ -96,8 +98,7 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
         lugaresVisitados ->sigV;
     }
 
-}*listaDePersonas;
-
+}*listaDePersonas; // Lista de las personas en el grafo.
 
 
 /**
@@ -118,7 +119,7 @@ struct Lugar * getLugar(string nombreLugar){
 
 /**
  *Insercion al inicio de la lista de lugares.
- *@param lug Nombre del nuevo lugar
+ *@param lug Nombre del nuevo lugar.
  */
 //insercion al inicio de la lista de lugares.
 struct Lugar* insertarLugar(string lug){
@@ -155,8 +156,8 @@ void amplitud(){
 }
 
 /**
- *Metodo para recorrer en profundidad los lugares
- *@param inicio Lugar donde se quiere hacer el recorrido
+ *Metodo para recorrer en profundidad los lugares.
+ *@param inicio Lugar donde se quiere hacer el recorrido.
  */
 void profundidad (struct Lugar *inicio){
         if((inicio == NULL) or (inicio->siVisitado == true)){
@@ -181,8 +182,8 @@ void profundidad (struct Lugar *inicio){
 bool existeRuta = false;
 /**
  * Metodo para obtener una ruta especifica en la sublista.
- * @param origen lugar de inicio
- * @param destino lugar de llegada
+ * @param origen lugar de inicio.
+ * @param destino lugar de llegada.
  * @return existeRuta true si existe la ruta o false si no.
  */
 bool buscarRuta(struct Lugar *origen, string destino){
@@ -205,7 +206,7 @@ bool buscarRuta(struct Lugar *origen, string destino){
 }
 
 /**
- *Metodo para contar cuantas lugares existen en el grafo
+ *Metodo para contar cuantas lugares existen en el grafo.
  *@return Entero que contiene la cantidad de lugares existentes en el grafo.
  */
 
@@ -238,8 +239,8 @@ Lugar* posicionLugar(int pos){
 }
 
 /**
- *Metodo para conocer  que posicion ocupa un lugar en el grafo
- *@param lugar Lugar el cual queremos determinar su posicion
+ *Metodo para conocer  que posicion ocupa un lugar en el grafo.
+ *@param lugar Lugar el cual queremos determinar su posicion.
  *@return Entero que tiene la posicion.
  */
 int posicionLugar(Lugar* lugar){
@@ -254,9 +255,9 @@ int posicionLugar(Lugar* lugar){
     return i;
 }
 /**
- *Metodo para contar cuantas rutas existen en un lugar designado
+ *Metodo para contar cuantas rutas existen en un lugar designado.
  *@param lugar Lugar que se eliigio para hacer el conteo de rutas.
- *@return Entero con el numero de rutas existentes en un lugar
+ *@return Entero con el numero de rutas existentes en un lugar.
  */
 int sizeLugar(Lugar* lugar){
     Ruta*TempR = lugar -> subLArcos;
@@ -312,13 +313,14 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
     if((anexo == NULL) or (anexo->siVisitado == true))
         return existeRuta;
 
-        if(anexo->lugar == destino){
-                if((distanciaMenor==0) || (dis < distanciaMenor)){
-                        distanciaMenor =dis;
-                        rutaMenor = ruta+destino;
-                }
-                existeRuta= true;
-                 return existeRuta;
+        if(anexo->lugar == destino)
+        {
+            if((distanciaMenor==0) || (dis < distanciaMenor)){
+                    distanciaMenor =dis;
+                    rutaMenor = ruta+destino;
+            }
+            existeRuta= true;
+             return existeRuta;
         }
     anexo->siVisitado =true;
 
@@ -329,7 +331,7 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
         tempR = tempR->sigAr;
     }
     anexo->siVisitado =false;
-    return false;
+    return NULL;
 }
 
 /**
@@ -356,12 +358,12 @@ Ruta* insertarRuta(string anexo ,string conexo,string tiempoRecorrido){
 
     struct Ruta *nuevaRuta = new Ruta(tiempoRecorrido,conexo);
 
-    //se inserto al inicio de la sublista de Arcos del primer lugar
+    //se inserto al inicio de la sublista de Arcos del primer lugar.
     nuevaRuta->sigAr = lugarAnexo->subLArcos;
     lugarAnexo->subLArcos = nuevaRuta;
 
     struct Ruta *nuevaRutaP = new Ruta(tiempoRecorrido,anexo);
-    //se inserto al inicio de la sublista de Arcos del segundo lugar
+    //se inserto al inicio de la sublista de Arcos del segundo lugar.
     nuevaRutaP->sigAr = lugarConexo->subLArcos;
     lugarConexo->subLArcos = nuevaRutaP;
 
@@ -373,7 +375,7 @@ Ruta* insertarRuta(string anexo ,string conexo,string tiempoRecorrido){
  * Metodo para obtener una persona especifica en la lista.
  * @param nombre Nombre de la persona la cual se esta buscando.
  * @param listaPersonas Lugar de inicio de la persona a buscar.
- * @return La persona si se encuentra en la lista, nulo si no se encuentra 
+ * @return La persona si se encuentra en la lista, nulo si no se encuentra.
  */ 
 Persona* getPersona(string nombre,Persona* listaPersonas){
     Persona*temp = listaPersonas;
@@ -428,10 +430,10 @@ bool validarPersona(string nombre,string lugarInicio,Persona* listaPersonas){
 }
 
 /**
- *Metodo para insertar personas en la lista 
- *@param nombre Nombre de la persona
+ *Metodo para insertar personas en la lista.
+ *@param nombre Nombre de la persona.
  *@param lugarInicio Lugar de inicio de la persona.
- *@return Objeto tipo persona agregada a la lista,nulo si no ya existe
+ *@return Objeto tipo persona agregada a la lista,nulo si no ya existe.
  */ 
 Persona* insertarPersona(string nombre,string lugarInicio,string lugarDestino){
     bool existe = validarPersona(nombre,lugarInicio,listaDePersonas);
@@ -465,8 +467,8 @@ Persona* insertarPersona(string nombre,string lugarInicio,string lugarDestino){
 }
 
 /**
- *Metodo para borrar objetos de tipo persona de la lista
- *@param nombre Nombre de la persona la cual se quiere eliminar
+ *Metodo para borrar objetos de tipo persona de la lista.
+ *@param nombre Nombre de la persona la cual se quiere eliminar.
  *@return Falso si no se pudo insertar,verdadero si se pudo borrar.
  */
 bool borrarPersona(string nombre){
@@ -536,8 +538,8 @@ void agregarAmistadPersona(string nombrePersona,string nombreAmigo){
 }
 
 /**
- * Metodo para mostrar en consola todas las amistades de una persona
- * @param nombrePersona Nombre de la persona a mostrar amistades
+ * Metodo para mostrar en consola todas las amistades de una persona.
+ * @param nombrePersona Nombre de la persona a mostrar amistades.
  */ 
 void imprimirAmistades(string nombrePersona){
     Persona* persona = getPersona(nombrePersona,listaDePersonas);
@@ -565,6 +567,14 @@ void imprimirAmistades(string nombrePersona){
     }
 }
 
+
+/**
+ * Metodo para modificar a una persona en la lista dentro del grafo.
+ * @param persona Nombre de la persona a modificar.
+ * @param nuevaPersona Nombre de la nueva persona.
+ */ 
+
+
 void modificarPersona(string persona, string nuevaPersona, Persona*listaDePersonas){
 
     Persona* modificar = getPersona(persona, listaDePersonas);
@@ -575,6 +585,13 @@ void modificarPersona(string persona, string nuevaPersona, Persona*listaDePerson
 
 }
 
+/**
+ * Metodo para modificar un lugar en la lista dentro del grafo.
+ * @param lugar Nombre del lugar que se va a modificar.
+ * @param nuevoLugar Nombre del nuevo lugar.
+ */ 
+
+
 void modificarLugar(string lugar, string nuevoLugar){
 
     Lugar* modificar = getLugar(lugar);
@@ -584,6 +601,16 @@ void modificarLugar(string lugar, string nuevoLugar){
 
 }
 
+/**
+ * Metodo para modificar la ruta de un lugar a otro
+ * @param anexo Nombre del lugar de origen de la ruta a modificar.
+ * @param conexo Nombre del lugar de destino de la ruta a modificar.
+ * @param tiempoRecorrido Tiempo recorrido a modificar.
+ * @param nuevoAnexo Nuevo nombre del lugar origen.
+ * @param nuevoConexo Nuevo nombre del lugar destino.
+ * @param nuevoTR Nuevo tiempo de recorrido.
+ */ 
+
 void modificarRuta(string anexo ,string conexo,string tiempoRecorrido, string nuevoAnexo, string nuevoConexo, string nuevoTR){
 
     //Ruta * modificar = buscarRuta(ruta);
@@ -592,12 +619,14 @@ void modificarRuta(string anexo ,string conexo,string tiempoRecorrido, string nu
                 //modificar->destino = nuevaRuta;
            // }
 
+
 }
 
 
 /**
  * Metodo para mostrar en consola aquellas personas que no tienen amigos
  */ 
+
 void personasSinAmigos(){
     Persona* temp = listaDePersonas;
     while (temp->sigP != NULL){
@@ -612,16 +641,21 @@ void personasSinAmigos(){
     }
 }
 /**
- *Cargar  datos
+ *Metodo que Carga datos automaticos para que las listas no se encuentren vacias.
  */
-
 
 void CargarDatosRuta(){
     insertarRuta("origen","destino","33");
+
 }
 
 
 
+/**
+ *Metodo que obtiene el minimo de dos numeros.
+ * @param a Numero a comparar.
+ * @param b Numero a comparar.
+ */
 int minimo(int a,int b)
 {
     if(a>b)
@@ -637,6 +671,7 @@ int minimo(int a,int b)
  *@param persona Persona la cual se va a mover
  *@param lugarAnterior Si se llama al metodo, este parametro debe ser un string vacio ("").
  */
+
 void avanzarAleatorio(Persona* persona, string lugarAnterior){
 
     Lugar* inicio= persona->lugarActual;
@@ -699,7 +734,7 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
 
 
 /**
- *Metodo  para encontrar la ruta mas corta hacia un destino
+ *Metodo para encontrar la ruta mas corta hacia un destino.
  *@param persona Objeto tipo persona la cual quiere tomar la ruta corta.
  */
 void rutaCortaDestino(Persona *persona){
@@ -710,26 +745,39 @@ void rutaCortaDestino(Persona *persona){
     int y = 0;
     while(temp != NULL){
         Ruta*tempRutas = temp->subLArcos;
-
-        for(int x = 0;x <=  sizeLugar(temp)+1;x++)
+        cout << temp ->lugar<< " : ";
+        int pos;
+        for(int x = 0;x < N ;x++)
         {
-            if(tempRutas == NULL){
-                A[y][x] = INF;
-                
-            }else{
-                A[y][x] = stoi(tempRutas->tiempoRecorrido);
-                tempRutas = tempRutas->sigAr;
-            }
+            A[y][x] = INF;
+        }
+        while(tempRutas != NULL)
+        {
+            pos = posicionLugar(getLugar(tempRutas->destino));
+            A[y][pos] = stoi(tempRutas->tiempoRecorrido);
+            tempRutas = tempRutas->sigAr;
         }
         temp = temp->sigV;
+        for(int w = 0; w < N ;w++){
+            if(A[y][w] == INF)
+                cout<< " INF ";
+            else
+                cout<<A[y][w]<<" ";
+        }
         y += 1;
+        
+        cout<<endl;
     }
     
     
     int D[N][N],i,j,vi,min,ve,S[N];
+        
+    for(i = 0;i<N;i++)
+    {
+        S[i] = 0;
+    }
     
-    
-    vi = posicionLugar(persona->lugarInicio);
+    vi = posicionLugar(persona->lugarInicio)+ 1;
     S[vi-1] = 1;
     
     for(i = 0;i<N;i++){
@@ -746,6 +794,8 @@ void rutaCortaDestino(Persona *persona){
             {
                 min=D[j][i];
                 ve=i;
+                //cout<<min<<endl;
+                
             }
         }
         S[ve]=1;
@@ -753,12 +803,12 @@ void rutaCortaDestino(Persona *persona){
         for(i=0;i<N;i++)
         {
             D[j+1][i]=minimo(D[j][i],D[j][ve]+A[ve][i]);
-            
+
+            cout<<D[j+1][i]<<endl;
         }
         
     }
     
-
     cout << "\t";
     for(i=0;i<N;i++)
         cout << (i+1) << "\t";
@@ -777,11 +827,74 @@ void rutaCortaDestino(Persona *persona){
         }
         cout << endl;
     }
+    
+    int rutaCortamin = D[N-1][posicionLugar(persona->lugarInicio)-1];//Ruta corta [tño grafo -1 ] [pos lugar en el grafo - 1]
+        
+}
+
+
+/**
+ *Metodo para encontrar la ruta por tiempo.
+ *@param tiempo El tiempo que se dura para llegar al lugar.
+ *@param origen El punto de inicio (anexo) del lugar.
+ *@param destino El punto de destino (conexo) del lugar.
+ */
+Ruta* buscarRutaPorTiempo(int tiempo,string origen,string destino){
+    Ruta* rutasRecorridas;
+    Ruta* tempR = getLugar(origen)->subLArcos;
+    int intento = 0;
+    while(tempR != NULL)
+    {
+        rutasRecorridas = tempR;
+        
+        for(int i = 0;i < sizeLugar(getLugar(tempR->destino)) ;i++){
+            intento = stoi(tempR->tiempoRecorrido);
+            while(intento < tiempo){
+                
+            }
+        }
+        
+        tempR = tempR ->sigAr;
+    }
+    return 0;
+}
+
+
+
+/**
+ *Metodo que al pulsar alguna tecla seguidamente el enter limpie la consola y continue.
+ *@param c Toma algun caracter del teclado que es ingresado por el usuario.
+ */
+
+bool pressKeyToContinue(){
+    cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
+    cout<<"Presione alguna tecla para limpiar ...";
+    char c = getchar();
+    if((int)c != 27){
+        cout<<"\x1B[2J\x1B[H";
+        return false;
+    }
+    return true;
 }
 
 /**
- *Metodo para interactuar con el usuario
- *@param opcion Opcion ingresada por el usuario a ejecutar
+ *Metodo para el mantenimiento de las listas, menu interactivo con el usuario.
+ *
+ *@param opcion Opcion ingresada por el usuario a ejecutar.
+ *@param opcionPersona Opcion ingresada por el usuario para escoger en el menu.
+ *@param esperar Opcion ingresada por el usuario que obtiene un valor para continuar.
+ *@param nombreP Nombre de la persona a ser agregada/modificada o borrada de la lista.
+ *@param nombreN Nombre de la persona nueva a ser sustituida.
+ *@param incioP El nombre del lugar de inicio de la persona que va a ser agregada.
+ *@param destinoP El nombre del destino de la persona que va a ser agregada.
+ *@param opcionLugar Opcion ingresada por el usuario que obtiene un valor para continuar.
+ *@param nombreL Nombre del lugar que va a ser agregado/modificado/borrado de la lista.
+ *@param lugarNuevo Nombre del nuevo lugar para reemplazar.
+ *@param nombreA Nombre del anexo del lugar que se va a agregar/modificar/borrar.
+ *@param nombreC Nombre del conexo del lugar.
+ *@param distancia Distancia que hay entre el anexo y conexo.
+ *@param nuevaA Nombre del nuevo anexo del lugar.
+ *@param nuevoC Nombre del nuevo conexo del lugar.
  */
 void mantenimientoListas(int opcion){
     //Persona [1]
@@ -837,19 +950,13 @@ void mantenimientoListas(int opcion){
             }
             case 3:
             {   
-                string nombreP,nombreN, nuevoL,esperar;
+                string nombreP,nombreN,esperar;
                 imprimirPersona(); 
                 cout<<"Ingrese el nombre de la persona que desea modificar: ";
                 cin>>nombreP;
                 cout<<endl<<"Ingrese el nombre de la nueva persona: ";
                 cin>>nombreN;
-                // cout<<endl<<"Ingrese el nombre del nuevo lugar de inicio de la persona:: ";
-                // cin>>nuevoL;
-                // cout<<endl<<"Ingrese el nombre del nuevo destino de la persona: ";
-                 
-                cout<<"---------------------";
                 modificarPersona(nombreP,nombreN,listaDePersonas);
-
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
                 cin>>esperar;
                 break;
@@ -960,11 +1067,14 @@ void mantenimientoListas(int opcion){
 
             case 2:
             {
-                string nombreR, esperar;
-                cout<<"Ingrese el nombre de la ruta que desea eliminar: ";
-                cin>>nombreR;
-
-
+                string nombreA, nombreC, distancia, esperar;
+                cout<<"Ingrese el nombre del inicio de la ruta que desea eliminar: ";
+                cin>>nombreA;
+                cout<<"Ingrese el nombre del destino de la ruta que desea eliminar: ";
+                cin>>nombreC;
+                cout<<"Ingrese la distancia de la ruta que desea eliminar: ";
+                cin>>nombreC;
+                //borrarRuta(nombreA,nombreC, distancia);
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
                 cin>>esperar;
                 break;
@@ -972,13 +1082,18 @@ void mantenimientoListas(int opcion){
             
             case 3:
             {   
-                string nombreR,nuevaR, esperar;
-                cout<<"Ingrese el nombre de la ruta que desea modificar: ";
-                cin>>nombreR;
+                string nombreA,nuevaA,nombreC,nuevoC, distancia,  esperar;
+                cout<<"Ingrese el nombre del anexo de la ruta que desea modificar: ";
+                cin>>nombreA;
                 cout<<endl<<"Ingrese el nombre de la nueva ruta: ";
-                cin>>nuevaR;
-                //modificarRuta(nombreR,nuevaR);
-
+                cin>>nuevaA;
+                cout<<"Ingrese el nombre del conexo la ruta que desea modificar: ";
+                cin>>nombreC;
+                cout<<endl<<"Ingrese el nombre del nuevo conexo la nueva ruta: ";
+                cin>>nuevoC;
+                cout<<endl<<"Ingrese la nueva distancia que va a tener la ruta: ";
+                cin>>distancia;
+                //modificarRuta(nombreA,nuevaA,nombreC,nuevoC,distancia);
 
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
                 cin>>esperar;
@@ -993,6 +1108,7 @@ void mantenimientoListas(int opcion){
 
     }
     }
+    pressKeyToContinue();
 }
 
 void consultas(int opcion){
@@ -1065,12 +1181,7 @@ void reportes(int opcion){
     {
         cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
         amplitud();
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-
+        break;
 
     }
 
@@ -1085,10 +1196,7 @@ void reportes(int opcion){
 
         //profundidad();
         //metodo
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
     }
 
@@ -1096,11 +1204,7 @@ void reportes(int opcion){
     {
         cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
         //metodo
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
     }
 
@@ -1110,11 +1214,7 @@ void reportes(int opcion){
         cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
         cin>>nombreP;
         imprimirAmistades(nombreP);
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
     }
 
@@ -1122,11 +1222,7 @@ void reportes(int opcion){
     {
         cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
         //metodo
-
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        break;
 
         
     }
@@ -1135,38 +1231,18 @@ void reportes(int opcion){
     {
         cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
         //metodo
-        
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-
-        
+        break;      
     }
 
 
 
-}
-
-
 
 }
 
 
 
-
-
-
-bool pressKeyToContinue(){
-    cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
-    cout<<"Presione alguna tecla para limpiar ...";
-    char c = getchar();
-    if((int)c != 27){
-        cout<<"\x1B[2J\x1B[H";
-        return false;
-    }
-    return true;
 }
+
 /**
  * Metodo para dibujar menu
  * 
@@ -1218,6 +1294,9 @@ void dibujarMenu(int opcion)
 
 /**
  * Metodo para interactuar con el usuario ,atraves de la consola.
+ * @param opcionUno Opcion que redirige a mantenimiento de listas.
+ * @param opcionDos Opcion que redirige a consultas.
+ * @param opcionTres Opcion que redirige a reportes.
  */
 void menu(){
      
@@ -1306,4 +1385,29 @@ int main()
 //     avanzarAleatorio(p1,"");
     
      return 0;
+    //menu();
+    insertarLugar("San Jose");
+    insertarLugar("Heredia");
+    insertarLugar("Alajuela");
+    insertarLugar("San Carlos");
+    insertarLugar("Naranjo");
+    insertarLugar("Cartago");
+
+    insertarRuta("Heredia", "Alajuela", "4");
+    insertarRuta("San Jose", "Heredia","12");
+    insertarRuta("Naranjo", "San Carlos", "19");
+    insertarRuta("Alajuela", "Naranjo", "15");
+    insertarRuta("San Jose", "Cartago","23");
+    insertarRuta("Heredia", "Cartago","5");
+    insertarPersona("Valentin", "San Jose", "Heredia");
+    //rutaCortaDestino(insertarPersona("Valentin", "San Jose", "Heredia"));
+    int pos = posicionLugar(getLugar("San Jose"));
+
+    Persona* p1 = getPersona("Valentin", listaDePersonas);
+    bool ruta = rutaCorta(p1->lugarInicio, p1->lugarDestino->lugar,"", 0);
+    cout<<endl<<existeRuta<<endl;
+    cout<<endl<<rutaMenor<<endl;
+    //avanzarAleatorio(p1,"");
+    
+    return 0;
 }
