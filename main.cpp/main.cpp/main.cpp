@@ -565,6 +565,36 @@ void imprimirAmistades(string nombrePersona){
     }
 }
 
+void modificarPersona(string persona, string nuevaPersona, Persona*listaDePersonas){
+
+    Persona* modificar = getPersona(persona, listaDePersonas);
+        if(modificar!= NULL){
+            modificar->nombre = nuevaPersona;
+        }
+     
+
+}
+
+void modificarLugar(string lugar, string nuevoLugar){
+
+    Lugar* modificar = getLugar(lugar);
+        if(modificar!= NULL){
+            modificar->lugar = nuevoLugar;
+        }
+
+}
+
+void modificarRuta(string anexo ,string conexo,string tiempoRecorrido, string nuevoAnexo, string nuevoConexo, string nuevoTR){
+
+    //Ruta * modificar = buscarRuta(ruta);
+
+       // if(modificar!= NULL){
+                //modificar->destino = nuevaRuta;
+           // }
+
+}
+
+
 /**
  * Metodo para mostrar en consola aquellas personas que no tienen amigos
  */ 
@@ -584,6 +614,7 @@ void personasSinAmigos(){
 /**
  *Cargar  datos
  */
+
 
 void CargarDatosRuta(){
     insertarRuta("origen","destino","33");
@@ -762,7 +793,7 @@ void mantenimientoListas(int opcion){
     {
         cout<<"[1] - Ingresar nuevo persona al grafo"<<endl;
         cout<<"[2] - Borrar persona al grafo."<<endl;
-        cout<<"[3] - Modificar persona que se encunetra en el grafo."<<endl;
+        cout<<"[3] - Modificar persona que se encuentra en el grafo."<<endl;
         int opcionPersona;
         cin>>opcionPersona;
 
@@ -806,11 +837,18 @@ void mantenimientoListas(int opcion){
             }
             case 3:
             {   
-                string nombreP, esperar;
+                string nombreP,nombreN, nuevoL,esperar;
+                imprimirPersona(); 
                 cout<<"Ingrese el nombre de la persona que desea modificar: ";
                 cin>>nombreP;
-                //modificarPersona(nombreP);
-
+                cout<<endl<<"Ingrese el nombre de la nueva persona: ";
+                cin>>nombreN;
+                // cout<<endl<<"Ingrese el nombre del nuevo lugar de inicio de la persona:: ";
+                // cin>>nuevoL;
+                // cout<<endl<<"Ingrese el nombre del nuevo destino de la persona: ";
+                 
+                cout<<"---------------------";
+                modificarPersona(nombreP,nombreN,listaDePersonas);
 
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
                 cin>>esperar;
@@ -819,7 +857,9 @@ void mantenimientoListas(int opcion){
 
 
         }
+        break;
     }
+
 
     case 2:
     {
@@ -863,10 +903,13 @@ void mantenimientoListas(int opcion){
 
             case 3:
             {   
-                string nombreL, esperar;
+                string nombreL,lugarNuevo, esperar;
                 cout<<"Ingrese el nombre del lugar que desea modificar: ";
                 cin>>nombreL;
-                //modificarLugar(nombreL);
+                cout<<endl<<"Ingrese el nombre del lugar que desea modificar: ";
+                cin>>lugarNuevo;
+
+                modificarLugar(nombreL, lugarNuevo);
 
 
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
@@ -876,6 +919,7 @@ void mantenimientoListas(int opcion){
 
 
         }
+        break;
     }
 
 
@@ -928,10 +972,12 @@ void mantenimientoListas(int opcion){
             
             case 3:
             {   
-                string nombreR, esperar;
+                string nombreR,nuevaR, esperar;
                 cout<<"Ingrese el nombre de la ruta que desea modificar: ";
                 cin>>nombreR;
-                //modificarRuta(nombreR);
+                cout<<endl<<"Ingrese el nombre de la nueva ruta: ";
+                cin>>nuevaR;
+                //modificarRuta(nombreR,nuevaR);
 
 
                 cout<<"Ingrese alguna tecla y presione enter para continuar: ";
@@ -941,6 +987,7 @@ void mantenimientoListas(int opcion){
 
 
         }
+        break;
 
 
 
@@ -1218,44 +1265,45 @@ void menu(){
 
 int main()
 {
-    //menu();
+    
 
-    insertarLugar("SJ");
-    insertarLugar("Heredia");
+     insertarLugar("SJ");
+     insertarLugar("Heredia");
     insertarLugar("Alajuela");
-    insertarRuta("SJ", "Heredia", "1");
-    insertarRuta("SJ", "Alajuela", "17");
-    insertarRuta("Heredia", "Alajuela", "4");
+//     insertarRuta("SJ", "Heredia", "1");
+     insertarRuta("SJ", "Alajuela", "17");
+     insertarRuta("Heredia", "Alajuela", "4");
+     insertarPersona("Jorge","SJ","Heredia");
     
-    rutaCortaDestino(insertarPersona("valentin", "SJ", "Heredia"));
-    int pos = posicionLugar(getLugar("Alajuela"));
+//     rutaCortaDestino(insertarPersona("valentin", "SJ", "Heredia"));
+//     int pos = posicionLugar(getLugar("Alajuela"));
+    menu();
+
+//     Lugar*l1= insertarLugar("San Jose");
+//     insertarLugar("Heredia");
+//     insertarLugar("Alajuela");
+//     insertarLugar("SC");
+//     insertarLugar("Naranjo");
+//     insertarLugar("Cartago");
+
+//     Persona* p1= insertarPersona("Juan", "San Jose", "Heredia");
+
+// //    insertarLugar("Heredia");
+// //    insertarLugar("Alajuela");
+// //
+
+//     insertarRuta("San Jose", "Heredia","12");
+//     insertarRuta("Naranjo", "SC", "13");
+//     insertarRuta("Alajuela", "Naranjo", "13");
+//     insertarRuta("Heredia", "Alajuela","12");
+//     insertarRuta("San Jose", "Cartago","12");
+//     insertarRuta("Heredia", "Cartago","12");
+
+// //    //insertarRuta("San Jose", "Alajuela","12");
+//     //profundidad(l1);
+// //    amplitud();
+
+//     avanzarAleatorio(p1,"");
     
-
-    Lugar*l1= insertarLugar("San Jose");
-    insertarLugar("Heredia");
-    insertarLugar("Alajuela");
-    insertarLugar("SC");
-    insertarLugar("Naranjo");
-    insertarLugar("Cartago");
-
-    Persona* p1= insertarPersona("Juan", "San Jose", "Heredia");
-
-//    insertarLugar("Heredia");
-//    insertarLugar("Alajuela");
-//
-
-    insertarRuta("San Jose", "Heredia","12");
-    insertarRuta("Naranjo", "SC", "13");
-    insertarRuta("Alajuela", "Naranjo", "13");
-    insertarRuta("Heredia", "Alajuela","12");
-    insertarRuta("San Jose", "Cartago","12");
-    insertarRuta("Heredia", "Cartago","12");
-
-//    //insertarRuta("San Jose", "Alajuela","12");
-    //profundidad(l1);
-//    amplitud();
-
-    avanzarAleatorio(p1,"");
-    
-    return 0;
+     return 0;
 }
