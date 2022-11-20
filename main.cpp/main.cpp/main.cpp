@@ -14,7 +14,6 @@ using namespace std;
 
 //Definiciones para poder recorrer rutas
 #define INF 999
-
 /**
  *Estructura lugar simboliza los lugares presentes en el
  */
@@ -266,6 +265,19 @@ int sizeLugar(Lugar* lugar){
     }
     return i;
 }
+
+/**
+ *Metodo para mostrar cuales lugares existen
+ */
+
+void imprimirLugares(){
+    Lugar* temp = grafo;
+    while(temp != NULL){
+        cout<<"El lugar de nombre "<< temp->lugar <<" se encuentra en el grafo en la posicion "<< posicionLugar(temp)<<" ."<<endl;
+        temp = temp -> sigV;
+    }
+}
+
 /**
  *Metodo para mostrar en consola todas las rutas con su debido tiempo de recorrido,este metodo es recursivo.
  *@param anexo Lugar de origen.
@@ -298,7 +310,7 @@ bool imprimirRutaconDistancias(struct Lugar *anexo, string destino, string ruta,
 //variables globales
 string rutaMenor = "";
 int distanciaMenor = 0;
-
+Lugar* lugaresVisitados;
 /**
  *Meotdo para encontrar la ruta mas corta hacia un lugar,este metodo es recursivo.
  *@param anexo Lugar de origen a encontrar ruta.
@@ -315,7 +327,7 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
         {
             if((distanciaMenor==0) || (dis < distanciaMenor)){
                     distanciaMenor =dis;
-                    rutaMenor = ruta+destino;
+                    rutaMenor = ruta+" "+destino;
             }
             existeRuta= true;
              return existeRuta;
@@ -324,11 +336,13 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
 
     struct Ruta *tempR =anexo->subLArcos;
     while(tempR != NULL){
-
-        rutaCorta(getLugar(tempR->destino), destino, ruta+anexo->lugar, dis + stoi(tempR->tiempoRecorrido));
+        lugaresVisitados = getLugar(anexo->lugar);
+        lugaresVisitados = lugaresVisitados -> sigV;
+        rutaCorta(getLugar(tempR->destino), destino, ruta+" "+anexo->lugar, dis + stoi(tempR->tiempoRecorrido));
         tempR = tempR->sigAr;
     }
     anexo->siVisitado =false;
+    
     return NULL;
 }
 
@@ -581,12 +595,78 @@ void personasSinAmigos(){
         
     }
 }
+
+/**
+ *Metodo para contar cuantas amistades tiene una persona
+ *@param persona Persona la cual queremo averiguar la cantidad de amigos.
+ *@return Entero con la cantidad de amigos
+ */
+int contarAmigos(Persona* persona){
+    int i = 0;
+    Persona*temp = persona->listaAmigos;
+    while (temp != NULL){
+        temp = temp -> sigP;
+        i += 1;
+    }
+    return i;
+}
+
+/**
+ *Metodo para mostrar cuales personas son las que tienen mas amgos
+ */
+void personasConMasAmigos(){
+    Persona*personaSociable = listaDePersonas;
+    
+    Persona*temp  = listaDePersonas;
+    int i = contarAmigos(personaSociable);
+    
+    while (temp->sigP != NULL){
+        temp = temp -> sigP;
+    }
+    while (temp != NULL){
+        int qtyAmigos = contarAmigos(temp);
+        if(qtyAmigos > i){
+            i = qtyAmigos;
+            personaSociable = temp;
+        }
+        temp = temp -> antP;
+        
+    }
+    if(i == 1)
+        cout<<"La persona que mas amigos tiene es "<< personaSociable->nombre <<" y su unico amigo es: "<<endl;
+    else
+        cout<<"La persona que mas amigos tiene es "<< personaSociable->nombre <<" y sus " << i << " amigos son: "<<endl;
+    
+    Persona*mostrarAm = personaSociable->listaAmigos;
+    while(mostrarAm != NULL){
+        cout<<"\t -"<< personaSociable ->listaAmigos->nombre<<endl;
+        mostrarAm = mostrarAm -> sigP;
+    }
+    
+}
+
 /**
  *Cargar  datos
  */
+void CargarDatos(){
+    insertarLugar("San Jose");
+    insertarLugar("Heredia");
+    insertarLugar("Alajuela");
+    insertarLugar("San Carlos");
 
-void CargarDatosRuta(){
-    insertarRuta("origen","destino","33");
+    insertarRuta("Heredia", "Alajuela", "4");
+    insertarRuta("Heredia", "San Carlos", "4");
+    insertarRuta("San Jose", "Heredia","12");;
+    insertarRuta("San Jose", "Alajuela","23");
+    insertarRuta("San Jose", "San Carlos","5");
+    
+    insertarPersona("Valentin", "San Jose", "Heredia");
+    insertarPersona("Juan", "Heredia", "San Carlos");
+    insertarPersona("Jorge", "San Carlos", "Alajuela");
+    
+    agregarAmistadPersona("Valentin", "Juan");
+    
+    //N = sizeGrafo();
 }
 
 
@@ -666,126 +746,160 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
     }
 }
 
-
-/**
- *Metodo  para encontrar la ruta mas corta hacia un destino
- *@param persona Objeto tipo persona la cual quiere tomar la ruta corta.
- */
-void rutaCortaDestino(Persona *persona){
-    //Pasamos las rutas a una matriz
-    int N = sizeGrafo();
-    int A[N][N];
-    Lugar* temp =  grafo;
-    int y = 0;
-    while(temp != NULL){
-        Ruta*tempRutas = temp->subLArcos;
-        cout << temp ->lugar<< " : ";
-        int pos;
-        for(int x = 0;x < N ;x++)
-        {
-            A[y][x] = INF;
-        }
-        while(tempRutas != NULL)
-        {
-            pos = posicionLugar(getLugar(tempRutas->destino));
-            A[y][pos] = stoi(tempRutas->tiempoRecorrido);
-            tempRutas = tempRutas->sigAr;
-        }
-        temp = temp->sigV;
-        for(int w = 0; w < N ;w++){
-            if(A[y][w] == INF)
-                cout<< " INF ";
-            else
-                cout<<A[y][w]<<" ";
-        }
-        y += 1;
-        
-        cout<<endl;
-    }
-    
-    
-    int D[N][N],i,j,vi,min,ve,S[N];
-        
-    for(i = 0;i<N;i++)
-    {
-        S[i] = 0;
-    }
-    
-    vi = posicionLugar(persona->lugarInicio)+ 1;
-    S[vi-1] = 1;
-    
-    for(i = 0;i<N;i++){
-        D[0][i] = A[vi-1][i];
-    }
-    
-    for(j=0;j<N-1;j++)
-    {
-        min=INF;
-        ve=0;
-        for(i=0;i<N;i++)
-        {
-            if(D[j][i]<min && S[i]==0)//el mas pequeÒo de todos los no visitados
-            {
-                min=D[j][i];
-                ve=i;
-                //cout<<min<<endl;
-                
-            }
-        }
-        S[ve]=1;
-        
-        for(i=0;i<N;i++)
-        {
-            D[j+1][i]=minimo(D[j][i],D[j][ve]+A[ve][i]);
-
-            cout<<D[j+1][i]<<endl;
-        }
-        
-    }
-    
-    cout << "\t";
-    for(i=0;i<N;i++)
-        cout << (i+1) << "\t";
-
-    cout << endl;
-
-    for(j=0;j<N;j++)
-    {
-        cout << (j+1) << "\t";
-        for(i=0;i<N;i++)
-        {
-            if(D[j][i]==INF)
-                cout << "INF\t";
-            else
-                cout << D[j][i] << "\t";
-        }
-        cout << endl;
-    }
-    
-    int rutaCortamin = D[N-1][posicionLugar(persona->lugarInicio)-1];//Ruta corta [tño grafo -1 ] [pos lugar en el grafo - 1]
-        
-}
-
-Ruta* buscarRutaPorTiempo(int tiempo,string origen,string destino){
-    Ruta* rutasRecorridas;
-    Ruta* tempR = getLugar(origen)->subLArcos;
-    int intento = 0;
-    while(tempR != NULL)
-    {
-        rutasRecorridas = tempR;
-        
-        for(int i = 0;i < sizeLugar(getLugar(tempR->destino)) ;i++){
-            intento = stoi(tempR->tiempoRecorrido);
-            while(intento < tiempo){
-                
-            }
-        }
-        
-        tempR = tempR ->sigAr;
-    }
-    return 0;
-<<<<<<< Updated upstream
-}
+//
+//int N = 1;
+//
+//bool hasCycle;
+//
+//// Function to check if a vertex v
+//// can be added at index pos in
+//// the Hamiltonian Cycle
+//bool isSafe(int v, int graph[][N], vector<int> path, int pos)
+//{
+//
+//    // If the vertex is adjacent to
+//    // the vertex of the previously
+//    // added vertex
+//    if (graph[path[pos - 1]][v] == 0)
+//        return false;
+//
+//    // If the vertex has already
+//    // been included in the path
+//    for (int i = 0; i < pos; i++)
+//        if (path[i] == v)
+//            return false;
+//
+//    // Both the above conditions are
+//    // not true, return true
+//    return true;
+//}
+//
+//// Recursive function to find all
+//// hamiltonian cycles
+//void FindHamCycle(int graph[][N], int pos, vector<int> path, bool visited[], int J)
+//{
+//    // If all vertices are included
+//    // in Hamiltonian Cycle
+//    if (pos == J) {
+//
+//        // If there is an edge
+//        // from the last vertex to
+//        // the source vertex
+//        if (graph[path[path.size() - 1]][path[0]] != 0) {
+//
+//            // Include source vertex
+//            // into the path and
+//            // print the path
+//            path.push_back(0);
+//            for (int i = 0; i < path.size(); i++) {
+//                cout << path[i] << " ";
+//            }
+//            cout << endl;
+//
+//            // Remove the source
+//            // vertex added
+//            path.pop_back();
+//
+//            // Update the hasCycle
+//            // as true
+//            hasCycle = true;
+//        }
+//        return;
+//    }
+//
+//    // Try different vertices
+//    // as the next vertex
+//    for (int v = 0; v < J; v++) {
+//
+//        // Check if this vertex can
+//        // be added to Cycle
+//        if (isSafe(v, graph, path, pos) && !visited[v]) {
+//
+//            path.push_back(v);
+//            visited[v] = true;
+//
+//            // Recur to construct
+//            // rest of the path
+//            FindHamCycle(graph, pos + 1, path, visited, J);
+//
+//            // Remove current vertex
+//            // from path and process
+//            // other vertices
+//            visited[v] = false;
+//            path.pop_back();
+//        }
+//    }
+//}
+//
+//// Function to find all possible
+//// hamiltonian cycles
+//void hamCycle(int *graph[][N], int J)
+//{
+//    // Initially value of boolean
+//    // flag is false
+//    hasCycle = false;
+//
+//    // Store the resultant path
+//    vector<int> path;
+//    path.push_back(0);
+//
+//    // Keeps the track of the
+//    // visited vertices
+//    bool visited[J];
+//
+//    for (int i = 0; i < J; i++)
+//        visited[i] = false;
+//
+//    visited[0] = true;
+//
+//    // Function call to find all
+//    // hamiltonian cycles
+//    FindHamCycle(graph, 1, path, visited, J);
+//
+//    if (!hasCycle) {
+//
+//        // If no Hamiltonian Cycle
+//        // is possible for the
+//        // given graph
+//        cout << "No Hamiltonian Cycle" << "possible " << endl;
+//        return;
+//    }
+//}
+//
+//
+//void createBoolValues(){
+//    //Pasamos las rutas a una matriz
+//
+//    bool A[N][N];
+//    Lugar* temp =  grafo;
+//    int y = 0;
+//    while(temp != NULL){
+//        Ruta*tempRutas = temp->subLArcos;
+//        cout << temp ->lugar<< " : ";
+//        int pos;
+//        for(int x = 0;x < N ;x++)
+//        {
+//            A[y][x] = 0;
+//        }
+//        while(tempRutas != NULL)
+//        {
+//            pos = posicionLugar(getLugar(tempRutas->destino));
+//            A[y][pos] = 1;
+//            tempRutas = tempRutas->sigAr;
+//        }
+//        temp = temp->sigV;
+//        for(int w = 0; w < N ;w++){
+//            if(A[y][w] == 0)
+//                cout<< "\t0 ";
+//            else
+//                cout<<"\t"<< 1;
+//        }
+//        y += 1;
+//
+//        cout<<endl;
+//    }
+//    hamCycle(A, N);
+//}
 
 bool pressKeyToContinue(){
     cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
@@ -796,8 +910,6 @@ bool pressKeyToContinue(){
         return false;
     }
     return true;
-=======
->>>>>>> Stashed changes
 }
 
 /**
@@ -810,193 +922,166 @@ void mantenimientoListas(int opcion){
     // Ruta   [3]
     switch (opcion)
     {
-    case 1:
-    {
-        cout<<"[1] - Ingresar nuevo persona al grafo"<<endl;
-        cout<<"[2] - Borrar persona al grafo."<<endl;
-        cout<<"[3] - Modificar persona que se encunetra en el grafo."<<endl;
-        int opcionPersona;
-        cin>>opcionPersona;
-
-
-        switch(opcionPersona)
+        case 1:
         {
-            case 1:
+            cout<<"[1] - Ingresar nuevo persona al grafo"<<endl;
+            cout<<"[2] - Borrar persona al grafo."<<endl;
+            cout<<"[3] - Modificar persona que se encunetra en el grafo."<<endl;
+            int opcionPersona;
+            cin>>opcionPersona;
+
+
+            switch(opcionPersona)
             {
-                string nombreP,inicioP,destinoP;
-                cout<<"Ingrese el nombre de la nueva persona: ";
-                cin>>nombreP;
-                cout<<"\nIngrese el nombre del lugar de inicio: ";
-                cin>>inicioP;
-                cout<<"\nIngrese el nombre del lugar de destino:";
-                cin>>destinoP;
-                Persona*nuevaPersona = insertarPersona(nombreP, inicioP, destinoP);
-                
-                if(nuevaPersona == NULL){
-                    cout<<"\nLa persona no se pudo agregar al grafo, intente nuevamente"<<endl;
+                case 1:
+                {
                     
-                };
+                    string nombreP,inicioP,destinoP;
+                    cout<<"Ingrese el nombre de la nueva persona: ";
+                    cin>>nombreP;
+                    cout<<"\nIngrese el nombre del lugar de inicio: ";
+                    cin>>inicioP;
+                    cout<<"\nIngrese el nombre del lugar de destino:";
+                    cin>>destinoP;
+                    Persona*nuevaPersona = insertarPersona(nombreP, inicioP, destinoP);
+                    
+                    if(nuevaPersona == NULL){
+                        cout<<"\nLa persona no se pudo agregar al grafo, intente nuevamente"<<endl;
+                        
+                    };
 
-                string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+                    string esperar;
+                }
+
+                case 2:
+                {
+                    string nombreP, esperar;
+                    cout<<"Ingrese el nombre de la persona que desea eliminar: ";
+                    cin>>nombreP;
+                    borrarPersona(nombreP);
+
+                    break;
+                }
+                case 3:
+                {
+                    string nombreP, esperar;
+                    cout<<"Ingrese el nombre de la persona que desea modificar: ";
+                    cin>>nombreP;
+                    //modificarPersona(nombreP);
+                    
+                    break;
+                }
+
+
             }
-
-            case 2:
-            {
-                string nombreP, esperar;
-                cout<<"Ingrese el nombre de la persona que desea eliminar: ";
-                cin>>nombreP;
-                borrarPersona(nombreP);
-
-
-
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-            }
-            case 3:
-            {   
-                string nombreP, esperar;
-                cout<<"Ingrese el nombre de la persona que desea modificar: ";
-                cin>>nombreP;
-                //modificarPersona(nombreP);
-
-
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-            }
-
-
         }
-    }
 
-    case 2:
-    {
-        cout<<"[1] - Ingresar nuevo lugar al grafo"<<endl;
-        cout<<"[2] - Borrar lugar al grafo."<<endl;
-        cout<<"[3] - Modificar lugar que se encunetra en el grafo."<<endl;
-        int opcionLugar;
-        cin>>opcionLugar;
-
-
-        switch(opcionLugar)
+        case 2:
         {
-            case 1:
+            cout<<"[1] - Ingresar nuevo lugar al grafo"<<endl;
+            cout<<"[2] - Borrar lugar al grafo."<<endl;
+            cout<<"[3] - Modificar lugar que se encunetra en el grafo."<<endl;
+            int opcionLugar;
+            cin>>opcionLugar;
+
+
+            switch(opcionLugar)
             {
-                string nombreL;
-                cout<<"Ingrese el nombre del lugar: ";
-                cin>>nombreL;
-                Lugar*nuevoLugar = insertarLugar(nombreL);
-                
-                if(nuevoLugar == NULL){
-                    cout<<"\nEl lugar no se pudo agregar, intente nuevamente"<<endl;
+                case 1:
+                {
+                    string nombreL;
+                    cout<<"Ingrese el nombre del lugar: ";
+                    cin>>nombreL;
+                    Lugar*nuevoLugar = insertarLugar(nombreL);
                     
-                };
-
-                string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-            }
-
-            case 2:
-            {
-                string nombreL, esperar;
-                cout<<"Ingrese el nombre del lugar que desea eliminar: ";
-                cin>>nombreL;
-                //borrarLugar(nombreL);
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-            }
-
-            case 3:
-            {   
-                string nombreL, esperar;
-                cout<<"Ingrese el nombre del lugar que desea modificar: ";
-                cin>>nombreL;
-                //modificarLugar(nombreL);
-
-
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-            }
-
-
-        }
-    }
-
-
-
-    case 3:
-    {
-        cout<<"[1] - Ingresar nueva ruta al grafo"<<endl;
-        cout<<"[2] - Borrar ruta al grafo."<<endl;
-        cout<<"[3] - Modificar ruta que se encunetra en el grafo."<<endl;
-        int opcionRuta;
-        cin>>opcionRuta;
-
-
-        switch(opcionRuta)
-        {
-            case 1:
-            {
-                string nombreA, nombreC, distancia;
-                cout<<"Ingrese el nombre del anexo: ";
-                cin>>nombreA;
-                cout<<"Ingrese el nombre del conexo: ";
-                cin>>nombreC;
-                cout<<"Ingrese la distancia: ";
-                cin>>distancia;
-
-                Ruta*nuevaRuta = insertarRuta(nombreA,nombreC,distancia);
+                    if(nuevoLugar == NULL){
+                        cout<<"\nEl lugar no se pudo agregar, intente nuevamente"<<endl;
+                        
+                    };
                 
-                if(nuevaRuta == NULL){
-                    cout<<"\nLa ruta no se pudo agregar, intente nuevamente"<<endl;
-                    
-                };
+                    break;
+                }
 
-                string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+                case 2:
+                {
+                    string nombreL, esperar;
+                    cout<<"Ingrese el nombre del lugar que desea eliminar: ";
+                    cin>>nombreL;
+                    //borrarLugar(nombreL);
+                    break;
+                }
+
+                case 3:
+                {
+                    string nombreL, esperar;
+                    cout<<"Ingrese el nombre del lugar que desea modificar: ";
+                    cin>>nombreL;
+                    //modificarLugar(nombreL);
+
+
+                    cout<<"Ingrese alguna tecla y presione enter para continuar: ";
+                    cin>>esperar;
+                    break;
+                }
+
+
             }
-
-            case 2:
-            {
-                string nombreL, esperar;
-                cout<<"Ingrese el nombre del lugar que desea eliminar: ";
-                cin>>nombreL;
-
-
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-            }
-            
-            case 3:
-            {   
-                string nombreP, esperar;
-                cout<<"Ingrese el nombre de la persona que desea modificar: ";
-                cin>>nombreP;
-                //modificarLugar(nombreL);
-
-
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
-            }
-
-
         }
 
 
 
-    }
+        case 3:
+        {
+            cout<<"[1] - Ingresar nueva ruta al grafo"<<endl;
+            cout<<"[2] - Borrar ruta al grafo."<<endl;
+            cout<<"[3] - Modificar ruta que se encunetra en el grafo."<<endl;
+            int opcionRuta;
+            cin>>opcionRuta;
+
+
+            switch(opcionRuta)
+            {
+                case 1:
+                {
+                    string nombreA, nombreC, distancia;
+                    cout<<"Ingrese el nombre del anexo: ";
+                    cin>>nombreA;
+                    cout<<"Ingrese el nombre del conexo: ";
+                    cin>>nombreC;
+                    cout<<"Ingrese la distancia: ";
+                    cin>>distancia;
+
+                    Ruta*nuevaRuta = insertarRuta(nombreA,nombreC,distancia);
+                    
+                    if(nuevaRuta == NULL){
+                        cout<<"\nLa ruta no se pudo agregar, intente nuevamente"<<endl;
+                        
+                    };
+                    break;
+                }
+
+                case 2:
+                {
+                    string nombreL, esperar;
+                    cout<<"Ingrese el nombre del lugar que desea eliminar: ";
+                    cin>>nombreL;
+
+                    break;
+                }
+                
+                case 3:
+                {
+                    string nombreP, esperar;
+                    cout<<"Ingrese el nombre de la persona que desea modificar: ";
+                    cin>>nombreP;
+                    //modificarLugar(nombreL);
+                    
+                    break;
+                }
+
+        }
+
+        }
     }
     pressKeyToContinue();
 }
@@ -1004,60 +1089,50 @@ void mantenimientoListas(int opcion){
 void consultas(int opcion){
     switch (opcion)
     {
+        cout<<"[1] -  Mostrar el estado de las personas en cada avance"<<endl;
+        cout<<"[2] -  Persona con mas amigos"<<endl;
+        cout<<"[3] -  Primera persona en terminar la caminata"<<endl;
+        cout<<"[4] -  Ultima persona en terminar la camita"<<endl;
 
-    case 1:
-    {
-        cout<<endl<<"Estado de las personas en cada avance: "<<endl;
-        //metodo
+        case 1:
+        {
+            cout<<endl<<"Estado de las personas en cada avance: "<<endl;
+            //metodo
 
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+            break;
 
 
-    }
+        }
 
-    case 2:
-    {
-        cout<<endl<<"La persona con mas amigos: "<<endl;
-        //metodo
+        case 2:
+        {
+            cout<<endl<<"La persona con mas amigos: "<<endl;
+            personasConMasAmigos();
 
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+            break;
 
-    }
+        }
 
-    case 3:
-    {
-        cout<<endl<<"Primera persona en terminar la caminata: "<<endl;
-        //metodo
+        case 3:
+        {
+            cout<<endl<<"Primera persona en terminar la caminata: "<<endl;
+            //metodo
 
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+            break;
 
-    }
+        }
 
-    case 4:
-    {
+        case 4:
+        {
 
-        cout<<endl<<"Ultima persona en terminar la caminata: "<<endl;
-        //metodo
+            cout<<endl<<"Ultima persona en terminar la caminata: "<<endl;
+            //metodo
+            break;
 
-        string esperar;
-                cout<<"Ingrese alguna tecla y presione enter para continuar: ";
-                cin>>esperar;
-                break;
+        }
 
     }
-
-
-
-}
+    pressKeyToContinue();
 
 }
 
@@ -1067,68 +1142,63 @@ void reportes(int opcion){
     switch (opcion)
     {
 
-    case 1:
-    {
-        cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
-        amplitud();
-        break;
+        case 1:
+        {
+            cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
+            amplitud();
+            break;
 
+        }
+
+        case 2:
+        {
+
+            cout<<endl<<"...Profundidad del grafo... "<<endl;
+            cout<<endl<<"Los lugares son los siguientes: "<<endl;
+            //imprimirLugares();
+            cout<<endl;
+            cout<<endl<<"Indique cual vertice(Lugar) desea ver: "<<endl;
+            //profundidad();
+            //metodo
+            break;
+
+        }
+
+        case 3:
+        {
+            cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
+            //metodo
+            break;
+
+        }
+
+        case 4:
+        {
+            string nombreP;
+            cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
+            cin>>nombreP;
+            imprimirAmistades(nombreP);
+            break;
+
+        }
+
+        case 5:
+        {
+            cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
+            personasSinAmigos();
+            break;
+
+            
+        }
+
+        case 6:
+        {
+            cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
+            //metodo
+            break;
+        }
     }
-
-    case 2:
-    {
-
-        cout<<endl<<"...Profundidad del grafo... "<<endl;
-        cout<<endl<<"Los lugares son los siguientes: "<<endl;
-        //imprimirLugares();
-        cout<<endl;
-        cout<<endl<<"Indique cual vertice(Lugar) desea ver: "<<endl;
-
-        //profundidad();
-        //metodo
-        break;
-
-    }
-
-    case 3:
-    {
-        cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
-        //metodo
-        break;
-
-    }
-
-    case 4:
-    {
-        string nombreP;
-        cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
-        cin>>nombreP;
-        imprimirAmistades(nombreP);
-        break;
-
-    }
-
-    case 5:
-    {
-        cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
-        //metodo
-        break;
-
-        
-    }
-
-    case 6:
-    {
-        cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
-        //metodo
-        break;      
-    }
-
-
-
-
-}
-
+    pressKeyToContinue();
 
 
 }
@@ -1171,12 +1241,12 @@ void dibujarMenu(int opcion)
         case 3:
         {
             cout<<"[3] - Desplegar las opciones de reportes del sistema."<<endl;
-            cout<<endl<<"\t[1] -  Imprimir grafo en amplitud, con toda la info almacenada"<<endl;
-            cout<<endl<<"\t[2] -  Imprimir en profundidad el grafo ( se indica cual vertice de incio)"<<endl;
-            cout<<endl<<"\t[3] -  Imprimir las rutas para las personas que avanzan de la forma 3 y 4"<<endl;
-            cout<<endl<<"\t[4] -  Imprimir la cantidad y el nombre de los amigos que logro realizar una persona"<<endl;
-            cout<<endl<<"\t[5] -  Quien o quienes no encontraron ningun amigo"<<endl;
-            cout<<endl<<"\t[6] -  Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa"<<endl;
+            cout<<"\t[1] -  Imprimir grafo en amplitud, con toda la info almacenada"<<endl;
+            cout<<"\t[2] -  Imprimir en profundidad el grafo ( se indica cual vertice de incio)"<<endl;
+            cout<<"\t[3] -  Imprimir las rutas para las personas que avanzan de la forma 3 y 4"<<endl;
+            cout<<"\t[4] -  Imprimir la cantidad y el nombre de los amigos que logro realizar una persona"<<endl;
+            cout<<"\t[5] -  Quien o quienes no encontraron ningun amigo"<<endl;
+            cout<<"\t[6] -  Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa"<<endl;
             break;
         }
     }
@@ -1232,28 +1302,8 @@ void menu(){
 int main()
 {
     //menu();
-    insertarLugar("San Jose");
-    insertarLugar("Heredia");
-    insertarLugar("Alajuela");
-    insertarLugar("San Carlos");
-    insertarLugar("Naranjo");
-    insertarLugar("Cartago");
-
-    insertarRuta("Heredia", "Alajuela", "4");
-    insertarRuta("San Jose", "Heredia","12");
-    insertarRuta("Naranjo", "San Carlos", "19");
-    insertarRuta("Alajuela", "Naranjo", "15");
-    insertarRuta("San Jose", "Cartago","23");
-    insertarRuta("Heredia", "Cartago","5");
-    insertarPersona("Valentin", "San Jose", "Heredia");
-    //rutaCortaDestino(insertarPersona("Valentin", "San Jose", "Heredia"));
-    int pos = posicionLugar(getLugar("San Jose"));
-
-    Persona* p1 = getPersona("Valentin", listaDePersonas);
-    bool ruta = rutaCorta(p1->lugarInicio, p1->lugarDestino->lugar,"", 0);
-    cout<<endl<<existeRuta<<endl;
-    cout<<endl<<rutaMeno<<endl;
-    //avanzarAleatorio(p1,"");
-    
+    CargarDatos();
+    personasConMasAmigos();
+    personasSinAmigos();
     return 0;
 }
