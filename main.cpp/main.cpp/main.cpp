@@ -80,7 +80,6 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos
      * Metodo constructor de la estructura persona
      * @param n Nombre de la persona
      * @param lugarInicio Lugar de inicio de esta persona
-     * @param lugarActual Lugar de actual de esta persona
      * @param lugarDestino Lugar de destino de esta persona
      */ 
     Persona(string n,struct Lugar* lugarInicio ,Lugar* lugarDestino){
@@ -312,13 +311,14 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
     if((anexo == NULL) or (anexo->siVisitado == true))
         return existeRuta;
 
-        if(anexo->lugar == destino){
-                if((distanciaMenor==0) || (dis < distanciaMenor)){
-                        distanciaMenor =dis;
-                        rutaMenor = ruta+destino;
-                }
-                existeRuta= true;
-                 return existeRuta;
+        if(anexo->lugar == destino)
+        {
+            if((distanciaMenor==0) || (dis < distanciaMenor)){
+                    distanciaMenor =dis;
+                    rutaMenor = ruta+destino;
+            }
+            existeRuta= true;
+             return existeRuta;
         }
     anexo->siVisitado =true;
 
@@ -329,7 +329,7 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
         tempR = tempR->sigAr;
     }
     anexo->siVisitado =false;
-    return false;
+    return NULL;
 }
 
 /**
@@ -679,26 +679,39 @@ void rutaCortaDestino(Persona *persona){
     int y = 0;
     while(temp != NULL){
         Ruta*tempRutas = temp->subLArcos;
-
-        for(int x = 0;x <=  sizeLugar(temp)+1;x++)
+        cout << temp ->lugar<< " : ";
+        int pos;
+        for(int x = 0;x < N ;x++)
         {
-            if(tempRutas == NULL){
-                A[y][x] = INF;
-                
-            }else{
-                A[y][x] = stoi(tempRutas->tiempoRecorrido);
-                tempRutas = tempRutas->sigAr;
-            }
+            A[y][x] = INF;
+        }
+        while(tempRutas != NULL)
+        {
+            pos = posicionLugar(getLugar(tempRutas->destino));
+            A[y][pos] = stoi(tempRutas->tiempoRecorrido);
+            tempRutas = tempRutas->sigAr;
         }
         temp = temp->sigV;
+        for(int w = 0; w < N ;w++){
+            if(A[y][w] == INF)
+                cout<< " INF ";
+            else
+                cout<<A[y][w]<<" ";
+        }
         y += 1;
+        
+        cout<<endl;
     }
     
     
     int D[N][N],i,j,vi,min,ve,S[N];
+        
+    for(i = 0;i<N;i++)
+    {
+        S[i] = 0;
+    }
     
-    
-    vi = posicionLugar(persona->lugarInicio);
+    vi = posicionLugar(persona->lugarInicio)+ 1;
     S[vi-1] = 1;
     
     for(i = 0;i<N;i++){
@@ -715,6 +728,8 @@ void rutaCortaDestino(Persona *persona){
             {
                 min=D[j][i];
                 ve=i;
+                //cout<<min<<endl;
+                
             }
         }
         S[ve]=1;
@@ -722,12 +737,12 @@ void rutaCortaDestino(Persona *persona){
         for(i=0;i<N;i++)
         {
             D[j+1][i]=minimo(D[j][i],D[j][ve]+A[ve][i]);
-            
+
+            cout<<D[j+1][i]<<endl;
         }
         
     }
     
-
     cout << "\t";
     for(i=0;i<N;i++)
         cout << (i+1) << "\t";
@@ -746,6 +761,29 @@ void rutaCortaDestino(Persona *persona){
         }
         cout << endl;
     }
+    
+    int rutaCortamin = D[N-1][posicionLugar(persona->lugarInicio)-1];//Ruta corta [tño grafo -1 ] [pos lugar en el grafo - 1]
+        
+}
+
+Ruta* buscarRutaPorTiempo(int tiempo,string origen,string destino){
+    Ruta* rutasRecorridas;
+    Ruta* tempR = getLugar(origen)->subLArcos;
+    int intento = 0;
+    while(tempR != NULL)
+    {
+        rutasRecorridas = tempR;
+        
+        for(int i = 0;i < sizeLugar(getLugar(tempR->destino)) ;i++){
+            intento = stoi(tempR->tiempoRecorrido);
+            while(intento < tiempo){
+                
+            }
+        }
+        
+        tempR = tempR ->sigAr;
+    }
+    return 0;
 }
 
 bool pressKeyToContinue(){
@@ -1191,43 +1229,28 @@ void menu(){
 int main()
 {
     //menu();
-
-    insertarLugar("SJ");
+    insertarLugar("San Jose");
     insertarLugar("Heredia");
     insertarLugar("Alajuela");
-    insertarRuta("SJ", "Heredia", "1");
-    insertarRuta("SJ", "Alajuela", "17");
-    insertarRuta("Heredia", "Alajuela", "4");
-    
-    rutaCortaDestino(insertarPersona("valentin", "SJ", "Heredia"));
-    int pos = posicionLugar(getLugar("Alajuela"));
-    
-
-    Lugar*l1= insertarLugar("San Jose");
-    insertarLugar("Heredia");
-    insertarLugar("Alajuela");
-    insertarLugar("SC");
+    insertarLugar("San Carlos");
     insertarLugar("Naranjo");
     insertarLugar("Cartago");
 
-    Persona* p1= insertarPersona("Juan", "San Jose", "Heredia");
-
-//    insertarLugar("Heredia");
-//    insertarLugar("Alajuela");
-//
-
+    insertarRuta("Heredia", "Alajuela", "4");
     insertarRuta("San Jose", "Heredia","12");
-    insertarRuta("Naranjo", "SC", "13");
-    insertarRuta("Alajuela", "Naranjo", "13");
-    insertarRuta("Heredia", "Alajuela","12");
-    insertarRuta("San Jose", "Cartago","12");
-    insertarRuta("Heredia", "Cartago","12");
+    insertarRuta("Naranjo", "San Carlos", "19");
+    insertarRuta("Alajuela", "Naranjo", "15");
+    insertarRuta("San Jose", "Cartago","23");
+    insertarRuta("Heredia", "Cartago","5");
+    insertarPersona("Valentin", "San Jose", "Heredia");
+    //rutaCortaDestino(insertarPersona("Valentin", "San Jose", "Heredia"));
+    int pos = posicionLugar(getLugar("San Jose"));
 
-//    //insertarRuta("San Jose", "Alajuela","12");
-    //profundidad(l1);
-//    amplitud();
-
-    avanzarAleatorio(p1,"");
+    Persona* p1 = getPersona("Valentin", listaDePersonas);
+    bool ruta = rutaCorta(p1->lugarInicio, p1->lugarDestino->lugar,"", 0);
+    cout<<endl<<existeRuta<<endl;
+    cout<<endl<<rutaMeno<<endl;
+    //avanzarAleatorio(p1,"");
     
     return 0;
 }
