@@ -784,6 +784,7 @@ Ruta* buscarRutaPorTiempo(int tiempo,string origen,string destino){
         tempR = tempR ->sigAr;
     }
     return 0;
+<<<<<<< Updated upstream
 }
 
 bool pressKeyToContinue(){
@@ -795,6 +796,8 @@ bool pressKeyToContinue(){
         return false;
     }
     return true;
+=======
+>>>>>>> Stashed changes
 }
 
 /**
