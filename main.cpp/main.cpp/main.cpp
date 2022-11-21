@@ -257,6 +257,35 @@ int sizeLugar(Lugar* lugar){
 }
 
 /**
+ *Metodo para modificar el nombre de un lugar en el grafo
+ *@param nombre Nombre del lugar a modificar
+ *@param nuevoN Nuevo nombre el cual se quiere cambiar
+ */
+void modificarLugar(string nombre ,string nuevoN){
+    Lugar*lugarCambiar = getLugar(nombre);
+    if(lugarCambiar == NULL){
+        cout<<"El lugar de origen no se pudo encotrar en grafo."<<endl;
+        return;
+    }
+    
+    Lugar*nuevoName = getLugar(nuevoN);
+    if(nuevoName != NULL){
+        cout<<"Ya existe un lugar con este nombre."<<endl;
+        return;
+    }
+    
+    Lugar*tempL = grafo;
+    while(tempL != NULL){
+        if(tempL == lugarCambiar){
+            lugarCambiar->lugar = nuevoN;
+            return;
+        }
+            
+        tempL = tempL -> sigV;
+    }
+}
+
+/**
  *Metodo para mostrar cuales lugares existen
  */
 
@@ -392,7 +421,7 @@ bool buscarRuta(struct Lugar *origen, string destino)
  *@param dis Tiempo que se tarda en recorrer hasta el destino.
  *@return Booleano que examina si existe rutas.
  */
-bool imprimirRutaconDistancias(struct Lugar *anexo, string destino, string ruta, int dis){
+bool imprimirRutaConDistancias(struct Lugar *anexo, string destino, string ruta, int dis){
     if((anexo == NULL) or (anexo->siVisitado == true))
             return existeRuta;
 
@@ -405,7 +434,7 @@ bool imprimirRutaconDistancias(struct Lugar *anexo, string destino, string ruta,
 
         struct Ruta *tempR =anexo->subLArcos;
         while(tempR != NULL){
-            imprimirRutaconDistancias(getLugar(tempR->destino), destino,
+            imprimirRutaConDistancias(getLugar(tempR->destino), destino,
                                       ruta+anexo->lugar, dis + stoi(tempR->tiempoRecorrido));
             tempR = tempR->sigAr;
         }
@@ -477,6 +506,48 @@ bool borrarRuta(string origen ,string destino){
         }
     }
     return false;
+}
+
+/**
+ * Metodo para modificar la ruta de un lugar origen  a un lugar destino
+ * @param tiempo El nuevo tiempo que se quiere modificar
+ */
+
+void modificarRuta(string origen ,string destino ,string tiempo){
+    Lugar*lugarOrigen = getLugar(origen);
+    if(lugarOrigen == NULL){
+        cout<<"El lugar de origen no se pudo encotrar en grafo."<<endl;
+        return;
+    }
+    Lugar*lugarDestino = getLugar(destino);
+    if(lugarDestino == NULL){
+        cout<<"El lugar de destino no se pudo encotrar en grafo."<<endl;
+        return;
+    }
+    
+    buscarRuta(lugarOrigen, destino);
+    if(!existeRuta){
+        cout<<"No existe una ruta para modificar desde "<<origen<<" hacia "<<destino<<"."<<endl;
+        return;
+    }
+    
+    Ruta*tempOrigen = lugarOrigen->subLArcos;
+    while(tempOrigen != NULL){
+        if(tempOrigen->destino == destino){
+            tempOrigen->tiempoRecorrido = tiempo;
+        }
+        tempOrigen =tempOrigen->sigAr;
+        
+    }
+    
+    Ruta*tempDestino = lugarDestino->subLArcos;
+    while(tempDestino != NULL){
+        if(tempDestino->destino == origen){
+            tempDestino->tiempoRecorrido = tiempo;
+        }
+        tempDestino =tempDestino->sigAr;
+    }
+    
 }
 
 //---------------------------- Metodos de Persona ---------------------------- //
@@ -719,56 +790,39 @@ void imprimirAmistades(string nombrePersona){
 
 /**
  * Metodo para modificar a una persona en la lista dentro del grafo.
- * @param persona Nombre de la persona a modificar.
- * @param nuevaPersona Nombre de la nueva persona.
+ * @param nombre Nombre de la persona a modificar.
+ * @param nuevoNombre Nombre de la nueva persona.
  */ 
 
 
-void modificarPersona(string persona, string nuevaPersona, Persona*listaDePersonas){
-
-    Persona* modificar = getPersona(persona, listaDePersonas);
-        if(modificar!= NULL){
-            modificar->nombre = nuevaPersona;
+void modificarPersona(string persona, string nuevoNombre){
+    Persona* personaCambiar = getPersona(persona, listaDePersonas);
+    
+    if(personaCambiar == NULL){
+        cout<<"Esta persona no existe en el lista de lugares."<<endl;
+        return;
+    }
+    
+    Persona* nuevaPersona = getPersona(persona, listaDePersonas);
+    if(nuevaPersona != NULL){
+        cout<<"Ya existe una persona con este nombre en el grafo."<<endl;
+        return;
+    }
+    
+    personaCambiar->nombre = nuevoNombre;
+    
+    Persona*tempPersonas = listaDePersonas;
+    while(tempPersonas != NULL){
+        Persona*amistades = tempPersonas->listaAmigos;
+        while(amistades != NULL){
+            if(amistades->nombre == persona)
+                amistades-> nombre = nuevoNombre;
+            
+            amistades = amistades-> sigP;
         }
-     
-
-}
-
-/**
- * Metodo para modificar un lugar en la lista dentro del grafo.
- * @param lugar Nombre del lugar que se va a modificar.
- * @param nuevoLugar Nombre del nuevo lugar.
- */ 
-
-
-void modificarLugar(string lugar, string nuevoLugar){
-
-    Lugar* modificar = getLugar(lugar);
-        if(modificar!= NULL){
-            modificar->lugar = nuevoLugar;
-        }
-
-}
-
-/**
- * Metodo para modificar la ruta de un lugar a otro
- * @param anexo Nombre del lugar de origen de la ruta a modificar.
- * @param conexo Nombre del lugar de destino de la ruta a modificar.
- * @param tiempoRecorrido Tiempo recorrido a modificar.
- * @param nuevoAnexo Nuevo nombre del lugar origen.
- * @param nuevoConexo Nuevo nombre del lugar destino.
- * @param nuevoTR Nuevo tiempo de recorrido.
- */ 
-
-void modificarRuta(string anexo ,string conexo,string tiempoRecorrido, string nuevoAnexo, string nuevoConexo, string nuevoTR){
-
-    //Ruta * modificar = buscarRuta(ruta);
-
-       // if(modificar!= NULL){
-                //modificar->destino = nuevaRuta;
-           // }
-
-
+        tempPersonas = tempPersonas-> sigP;
+    }
+    
 }
 
 
@@ -1668,6 +1722,7 @@ int main()
 {
     
     CargarDatos();
-    menu();
+    imprimirRutaConDistancias(getLugar("San Jose"), "Heredia", "", 0);
+    //menu();
     return 0;
 }
