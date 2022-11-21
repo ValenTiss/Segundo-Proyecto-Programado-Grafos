@@ -368,6 +368,46 @@ void personasSinRutas(){
 }
 
 /**
+ *Metodo para encontrar cual fue la persona que menos tardo en recorrer el grafo
+ */
+void menosTardo(){
+    Persona*ganador = listaDePersonas;
+    int menorTiempo = ganador->tiempoRecorrido;
+    
+    Persona*tempP = listaDePersonas;
+    while(tempP != NULL){
+        if(menorTiempo < tempP->tiempoRecorrido){
+            ganador = tempP;
+            menorTiempo = tempP->tiempoRecorrido;
+        }
+        tempP = tempP -> sigP;
+    }
+    
+    cout<<"La persona que menos tiempo tardo en reccorer el grafo fue:"<<endl;
+    cout<<"\t - "<<tempP->nombre<< " que tardo " << tempP->tiempoRecorrido <<" minutos en llegar desde" << tempP->lugarInicio << " hasta " << tempP -> lugarDestino<<"."<<endl;
+}
+
+/**
+ *Metodo para determinar cual fue la persona que mas tardo en recorrer el grafo
+ */
+void masTardo(){
+    Persona*perdedor = listaDePersonas;
+    int mayorTiempo = perdedor->tiempoRecorrido;
+    
+    Persona*tempP = listaDePersonas;
+    while(tempP != NULL){
+        if(mayorTiempo > tempP->tiempoRecorrido){
+            perdedor = tempP;
+            mayorTiempo = tempP->tiempoRecorrido;
+        }
+        tempP = tempP -> sigP;
+    }
+    
+    cout<<"La persona que mas tiempo tardo en reccorer el grafo fue:"<<endl;
+    cout<<"\t - "<<tempP->nombre<< " que tardo " << tempP->tiempoRecorrido <<" minutos en llegar desde" << tempP->lugarInicio << " hasta " << tempP -> lugarDestino<<"."<<endl;
+}
+
+/**
  *Metodo para validar tiempo
  */
 bool isNumber(const string& s)
@@ -569,6 +609,22 @@ void modificarRuta(string origen ,string destino ,string tiempo){
     
 }
 
+void imprimirRutas(){
+    Lugar*tempL = grafo;
+    while(tempL != NULL){
+        cout<<"Rutas desde ";
+        cout<<tempL->lugar<<":"<<endl;
+        Ruta*rutas =tempL->subLArcos;
+        while(rutas != NULL){
+            cout<<"\tExiste ruta que conecta desde "<< tempL->lugar <<" hasta " << rutas->destino << " y se tarda "<< rutas->tiempoRecorrido << " minutos en recorrerse."<<endl;
+            rutas = rutas -> sigAr;
+            
+        }
+        tempL = tempL->sigV;
+        cout<<endl;
+    }
+}
+
 //---------------------------- Metodos de Persona ---------------------------- //
 
 /**
@@ -602,7 +658,7 @@ void imprimirPersona(){
         temp = temp -> sigP;
     }
     while (temp != NULL){
-        cout<<"La persona " <<temp-> nombre<<" empezo en el lugar de  "<<temp->lugarInicio->lugar<<" se encuentra en la lista\n";
+        cout<<"\nLa persona " <<temp-> nombre<<" empezo en el lugar de  "<<temp->lugarInicio->lugar<<" se encuentra en la lista.\n";
         temp = temp -> antP;
         
     }
@@ -935,9 +991,7 @@ void CargarDatos(){
     insertarPersona("Valentin", "San Jose", "Heredia",1);
     insertarPersona("Juan", "Heredia", "San Carlos",2);
     insertarPersona("Jorge", "San Jose", "San Carlos",3);
-    agregarAmistadPersona("Valentin", "Juan");
     
-    //N = sizeGrafo();
 }
 
 
@@ -953,7 +1007,24 @@ int minimo(int a,int b)
     else
         return a;
 }
-
+/**
+ *Metodo que llama a todos los imprimir para mostrar toda la informacion existente en el grafo
+ */
+void imprimirGrafo(){
+    cout<<"--------LUGARES--------"<<endl;
+    imprimirLugares();
+    cout<<"\n--------RUTAS--------"<<endl;
+    imprimirRutas();
+    cout<<"\n--------PERSONAS--------"<<endl;
+    imprimirPersona();
+    cout<<"\n--------AMISTADES--------"<<endl;
+    Persona*tempA = listaDePersonas;
+    while(tempA != NULL){
+        imprimirAmistades(tempA->nombre);
+        tempA = tempA->sigP;
+    }
+    
+}
 
 //---------------------------- Tipos de avance ---------------------------- //
 /**
@@ -1191,7 +1262,6 @@ void avanzarRutaCorta(Persona*persona){
     Lugar* tempL = lugaresVisitados;
     
     while(lugaresVisitados != NULL){
-        cout<<lugaresVisitados->lugar<<endl;
         if(lugaresVisitados ->sigV != NULL)
             persona->rutasRecorridas = getRuta(lugaresVisitados, lugaresVisitados->sigV->lugar);
         
@@ -1637,8 +1707,15 @@ void consultas(int opcion){
             
         case 1:
         {
-            cout<<endl<<"Estado de las personas en cada avance: "<<endl;
-            //metodo
+            string nombre;
+            cout<<"\nIngrese el nombre de la persona a mostrar: ";
+            getline(cin>>ws, nombre);
+            while(getPersona(nombre, listaDePersonas) == NULL){
+                cout<<"\nEsta persona no existe en la lista de personas"<<endl;
+                cout<<"Ingrese el nombre de otra persona:";
+                getline(cin>>ws, nombre);
+            }
+            imprimirAvance(getPersona(nombre, listaDePersonas));
             break;
             
             
@@ -1653,16 +1730,14 @@ void consultas(int opcion){
             
         case 3:
         {
-            cout<<endl<<"Primera persona en terminar la caminata: "<<endl;
-            
+            masTardo();
             break;
             
         }
             
         case 4:
         {
-            
-            cout<<endl<<"Ultima persona en terminar la caminata: "<<endl;
+            menosTardo();
             break;
             
         }
@@ -1680,6 +1755,7 @@ void reportes(int opcion){
     cout<<"[4] -  Imprimir la cantidad y el nombre de los amigos que logro realizar una persona"<<endl;
     cout<<"[5] -  Quien o quienes no encontraron ningun amigo"<<endl;
     cout<<"[6] -  Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa"<<endl;
+    cout<<"[7] -  Imprimir el arreglo, toda la información que se almacena en el arreglo."<<endl;
     switch (opcion)
     {
             
@@ -1687,7 +1763,6 @@ void reportes(int opcion){
         {
             cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
             amplitud();
-            pressKeyToContinue();
             break;
             
         }
@@ -1706,7 +1781,6 @@ void reportes(int opcion){
             }
             
             profundidad(getLugar(nombreLugar));
-            pressKeyToContinue();
             break;
             
         }
@@ -1716,7 +1790,6 @@ void reportes(int opcion){
         {
             cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
             //metodo
-            pressKeyToContinue();
             break;
             
         }
@@ -1727,7 +1800,6 @@ void reportes(int opcion){
             cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
             cin>>nombreP;
             imprimirAmistades(nombreP);
-            pressKeyToContinue();
             break;
             
         }
@@ -1736,7 +1808,6 @@ void reportes(int opcion){
         {
             cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
             personasSinAmigos();
-            pressKeyToContinue();
             break;
             
             
@@ -1746,7 +1817,12 @@ void reportes(int opcion){
         {
             cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
             personasSinRutas();
-            pressKeyToContinue();
+            break;
+        }
+        case 7:
+        {
+            cout<<"TODA LA INFORMACION DEL GRAFO."<<endl;
+            imprimirGrafo();
             break;
         }
     }
@@ -1856,10 +1932,6 @@ void menu(){
 int main()
 {
     CargarDatos();
-    avanzarRutaCorta(getPersona("Valentin", listaDePersonas));
-    
-    //imprimirAvance(getPersona("Valentin", listaDePersonas));
-    
-    //menu();
+    menu();
     return 0;
 }
