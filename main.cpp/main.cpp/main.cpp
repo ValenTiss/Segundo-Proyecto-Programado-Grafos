@@ -661,6 +661,7 @@ bool borrarPersona(string nombre){
     
     }
     else if(listaDePersonas->nombre == nombre){
+        cout<<"La persona: "<< listaDePersonas->nombre<<" se ha borrado correctamente."; 
             listaDePersonas = listaDePersonas->sigP;
             return true;
     }else
@@ -669,6 +670,7 @@ bool borrarPersona(string nombre){
         Persona *tempAnt= listaDePersonas;
         while(temp != NULL){
             if(temp->nombre == nombre){//borrar
+            cout<<"La persona: "<< temp->nombre<<" se ha borrado correctamente."; 
                     tempAnt->sigP  = temp->sigP;
                     return true;
             }
@@ -1300,6 +1302,8 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
 bool pressKeyToContinue(){
     cout<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
     cout<<"Presione alguna tecla para limpiar ...";
+    string esperar; 
+    cin>>esperar; 
     char c = getchar();
     if((int)c != 27){
         cout<<"\x1B[2J\x1B[H";
@@ -1344,7 +1348,7 @@ void mantenimientoListas(int opcion){
                         cout<<"\nLa persona no se pudo agregar al grafo, intente nuevamente"<<endl;
                         
                     };
-                    
+                    pressKeyToContinue();
                     break;
                 }
                     
@@ -1354,7 +1358,7 @@ void mantenimientoListas(int opcion){
                     cout<<"Ingrese el nombre de la persona que desea eliminar: ";
                     cin>>nombreP;
                     borrarPersona(nombreP);
-                    
+                    pressKeyToContinue();
                     break;
                 }
                 case 3:
@@ -1363,7 +1367,7 @@ void mantenimientoListas(int opcion){
                     cout<<"Ingrese el nombre de la persona que desea modificar: ";
                     cin>>nombreP;
                     //modificarPersona(nombreP);
-                    
+                    pressKeyToContinue();
                     break;
                 }
                     break;
@@ -1387,7 +1391,7 @@ void mantenimientoListas(int opcion){
                         cout<<"Ingrese el nombre del lugar: ";
                         cin>>nombreL;
                         Lugar*nuevoLugar = insertarLugar(nombreL);
-                        
+                        pressKeyToContinue();
                         break;
                     }
                         
@@ -1397,6 +1401,7 @@ void mantenimientoListas(int opcion){
                         cout<<"Ingrese el nombre del lugar que desea eliminar: ";
                         cin>>nombreL;
                         //borrarLugar(nombreL);
+                        pressKeyToContinue();
                         break;
                     }
                         
@@ -1409,6 +1414,7 @@ void mantenimientoListas(int opcion){
                         cin>>lugarNuevo;
                         
                         modificarLugar(nombreL, lugarNuevo);
+                        pressKeyToContinue();
                         break;
                     }
                         
@@ -1443,6 +1449,7 @@ void mantenimientoListas(int opcion){
                             cout<<"\nLa ruta no se pudo agregar, intente nuevamente"<<endl;
                             
                         }
+                        pressKeyToContinue();
                         break;
                     }
                         
@@ -1456,7 +1463,7 @@ void mantenimientoListas(int opcion){
                         cout<<"Ingrese la distancia de la ruta que desea eliminar: ";
                         cin>>nombreC;
                         //borrarRuta(nombreA,nombreC, distancia);
-                        
+                        pressKeyToContinue();
                         break;
                     }
                         
@@ -1475,7 +1482,7 @@ void mantenimientoListas(int opcion){
                         cin>>distancia;
                         //modificarRuta(nombreA,nuevaA,nombreC,nuevoC,distancia);
                         
-                        
+                        pressKeyToContinue();
                         break;
                     }
                         
@@ -1503,7 +1510,7 @@ void consultas(int opcion){
         {
             cout<<endl<<"Estado de las personas en cada avance: "<<endl;
             //metodo
-            
+            pressKeyToContinue();
             break;
             
             
@@ -1513,7 +1520,7 @@ void consultas(int opcion){
         {
             cout<<endl<<"La persona con mas amigos: "<<endl;
             personasConMasAmigos();
-            
+            pressKeyToContinue();
             break;
             
         }
@@ -1522,7 +1529,7 @@ void consultas(int opcion){
         {
             cout<<endl<<"Primera persona en terminar la caminata: "<<endl;
             //metodo
-            
+            pressKeyToContinue();
             break;
             
         }
@@ -1532,6 +1539,7 @@ void consultas(int opcion){
             
             cout<<endl<<"Ultima persona en terminar la caminata: "<<endl;
             //metodo
+            pressKeyToContinue();
             break;
             
         }
@@ -1557,6 +1565,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
             amplitud();
+            pressKeyToContinue();
             break;
 
         }
@@ -1575,6 +1584,7 @@ void reportes(int opcion){
             }
             
             profundidad(getLugar(nombreLugar));
+            pressKeyToContinue();
             break;
 
         }
@@ -1584,6 +1594,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
             //metodo
+            pressKeyToContinue();
             break;
 
         }
@@ -1594,6 +1605,7 @@ void reportes(int opcion){
             cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
             cin>>nombreP;
             imprimirAmistades(nombreP);
+            pressKeyToContinue();
             break;
 
         }
@@ -1602,6 +1614,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
             personasSinAmigos();
+            pressKeyToContinue();
             break;
 
             
@@ -1611,6 +1624,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
             personasSinRutas();
+            pressKeyToContinue();
             break;
         }
     }
@@ -1722,7 +1736,7 @@ int main()
 {
     
     CargarDatos();
-    imprimirRutaConDistancias(getLugar("San Jose"), "Heredia", "", 0);
-    //menu();
+    //imprimirRutaConDistancias(getLugar("San Jose"), "Heredia", "", 0);
+    menu();
     return 0;
 }
