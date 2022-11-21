@@ -851,14 +851,12 @@ void CargarDatos(){
     insertarLugar("San Carlos");
     insertarRuta("Heredia", "Alajuela", "4");
     insertarRuta("Heredia", "San Carlos", "4");
-    //insertarRuta("San Jose", "Heredia","12");;
-    //insertarRuta("San Jose", "Alajuela","23");
+    insertarRuta("San Jose", "Heredia","12");;
+    insertarRuta("San Jose", "Alajuela","23");
     insertarRuta("San Jose", "San Carlos","5");
-    
     insertarPersona("Valentin", "San Jose", "Heredia");
     insertarPersona("Juan", "Heredia", "San Carlos");
     insertarPersona("Jorge", "San Jose", "San Carlos");
-    
     agregarAmistadPersona("Valentin", "Juan");
     
     //N = sizeGrafo();
@@ -1172,7 +1170,7 @@ void mantenimientoListas(int opcion){
     {
         case 1:
         {
-            cout<<"[1] - Ingresar nuevo persona al grafo"<<endl;
+            cout<<"[1] - Ingresar nueva persona al grafo"<<endl;
             cout<<"[2] - Borrar persona al grafo."<<endl;
             cout<<"[3] - Modificar persona que se encuentra en el grafo."<<endl;
             int opcionPersona;
@@ -1197,7 +1195,7 @@ void mantenimientoListas(int opcion){
                         
                     };
                     
-                    string esperar;
+                    break;
                 }
                     
                 case 2:
@@ -1220,6 +1218,7 @@ void mantenimientoListas(int opcion){
                 }
                     break;
             }
+            break;
             
         case 2:
             {
@@ -1566,9 +1565,13 @@ void menu(){
         } while ((int)c != 27);
 }
 
+/**
+ * Metodo main el cual redirigue a cargar los datos y al menu.
+ */
 int main()
 {
-    //menu()
+    
     CargarDatos();
+    menu();
     return 0;
 }
