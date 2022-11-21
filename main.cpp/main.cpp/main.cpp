@@ -922,23 +922,125 @@ void personasConMasAmigos(){
 /**
  *Metodo que Carga datos automaticos para que las listas no se encuentren vacias.
  */
+
 void CargarDatos(){
-    insertarLugar("San Jose");
-    insertarLugar("Heredia");
-    insertarLugar("Alajuela");
-    insertarLugar("San Carlos");
-    insertarRuta("Heredia", "Alajuela", "4");
-    insertarRuta("Heredia", "San Carlos", "4");
-    insertarRuta("San Jose", "Heredia","12");;
-    insertarRuta("San Jose", "Alajuela","23");
-    insertarRuta("San Jose", "San Carlos","5");
-    insertarPersona("Valentin", "San Jose", "Heredia",1);
-    insertarPersona("Juan", "Heredia", "San Carlos",2);
-    insertarPersona("Jorge", "San Jose", "San Carlos",3);
-    agregarAmistadPersona("Valentin", "Juan");
+    int pregunta;
+    cout<<"Ingrese cual grafo desea cargar 1 o 2: ";
+    cin>>pregunta;
+    if(pregunta == 1){
+        insertarLugar("San Jose");
+        insertarLugar("Heredia");
+        insertarLugar("Alajuela");
+        insertarLugar("San Carlos");
+        insertarLugar("Upala");
+
+        insertarRuta("Heredia", "Alajuela", "4");
+        insertarRuta("Heredia", "San Carlos", "4");
+        insertarRuta("San Jose", "Heredia","12");;
+        insertarRuta("San Jose", "Alajuela","23");
+        insertarRuta("San Jose", "San Carlos","59");
+        insertarRuta("Alajuela", "San Carlos", "36");
+        insertarRuta("Upala", "San Carlos", "42");
+        insertarRuta("San Jose", "Upala","41");;
+        insertarRuta("Heredia", "Upala","50");
+        insertarRuta("San Carlos", "Upala","15");
+
+
+        insertarPersona("Valentin", "San Jose", "Heredia");
+        insertarPersona("Juan", "Heredia", "San Carlos");
+        insertarPersona("Jorge", "San Jose", "San Carlos");
+        insertarPersona("Nicole", "San Carlos", "Heredia");
+        insertarPersona("Adrian", "Heredia", "San Carlos");
+        insertarPersona("Valeria", "San Jose", "Alajuela");
+        insertarPersona("Nicolas", "San Jose", "San Carlos");
+        insertarPersona("Lorena", "Upala", "San Carlos");
+        insertarPersona("Fabian", "San Jose", "San Carlos");
+        insertarPersona("Andres", "San Jose", "San Carlos");
+        insertarPersona("Rosario", "San Jose", "San Carlos");
+        insertarPersona("Maria", "San Carlos", "Alajuela");
+        insertarPersona("Melisa", "San Jose", "Upala");
+        insertarPersona("Stefannie", "San Jose", "Upala");
+        insertarPersona("Tatiana", "Heredia", "San Carlos");
+        insertarPersona("Dayana", "Heredia", "Alajuela");
+        insertarPersona("Marcos", "Heredia", "San Carlos");
+        insertarPersona("Rodrigo", "San Jose", "Heredia");
+        insertarPersona("Jose", "San Jose", "Heredia");
+        insertarPersona("Joseph", "Upala", "San Carlos");
+        
+        agregarAmistadPersona("Valentin", "Juan");
+        agregarAmistadPersona("Maria", "Juan");
+        agregarAmistadPersona("Juan", "Marcos");
+        agregarAmistadPersona("Adrian","Nicole");
+        agregarAmistadPersona("Dayana","Tatiana");
+        agregarAmistadPersona("Joseph","Jorge");
+        agregarAmistadPersona("Jose","Nicole");
+        agregarAmistadPersona("Melisa","Maria");
+        agregarAmistadPersona("Jorge","Nicole");
+        agregarAmistadPersona("Rodrigo","Joseph");
+        agregarAmistadPersona("Dayana","Nicole");
+        agregarAmistadPersona("Marcos","Jorge");
+        agregarAmistadPersona("Maria","Fabian");
+        agregarAmistadPersona("Lorena","Fabian");
+        agregarAmistadPersona("Lorena","Valentin");
+        agregarAmistadPersona("Jorge","Jose");
+        agregarAmistadPersona("Joseph","Stefannie");
+        agregarAmistadPersona("Maria","Jose");
+        
+    }
+    if(pregunta == 2){
+        
+        insertarLugar("San Jose");
+        insertarLugar("Heredia");
+        insertarLugar("Alajuela");
+        insertarLugar("San Carlos");
+        insertarLugar("Upala");
+        insertarLugar("Venecia");
+        insertarLugar("Rio Cuarto");
+
+        insertarPersona("Jorge", "Venecia", "San Carlos");
+        insertarPersona("Valentin", "San Carlos", "Heredia");
+        insertarPersona("Juan", "Upala", "San Carlos");
+
+        insertarRuta("Heredia", "Alajuela", "41");
+        insertarRuta("Venecia", "San Carlos", "54");
+        insertarRuta("Rio Cuarto", "Heredia","22");;
+        insertarRuta("Venecia", "Alajuela","43");
+        insertarRuta("Rio Cuarto", "San Carlos","45");
+        insertarRuta("Alajuela", "San Carlos", "33");
+        insertarRuta("Upala", "San Carlos", "24");
+        insertarRuta("Rio Cuarto", "Upala","10");;
+        insertarRuta("Heredia", "Upala","50");
+        insertarRuta("Venecia", "Upala","58");
+
+        insertarRuta("Venecia", "Alajuela", "43");
+        insertarRuta("Heredia", "San Carlos", "54");
+        insertarRuta("San Jose", "Heredia","44");;
+        insertarRuta("San Jose", "Alajuela","42");
+        insertarRuta("San Jose", "Venecia","59");
+        insertarRuta("Alajuela", "San Carlos", "33");
+        insertarRuta("Venecia", "San Carlos", "54");
+        insertarRuta("San Jose", "Upala","12");;
+        insertarRuta("Heredia", "Upala","50");
+        insertarRuta("Venecia", "Upala","58");
+
+        insertarRuta("Heredia", "Alajuela", "41");
+        insertarRuta("Heredia", "San Carlos", "54");
+        insertarRuta("San Jose", "Venecia","59");;
+        insertarRuta("San Jose", "Rio Cuarto","25");
+        insertarRuta("Venecia", "San Jose","57");
+
+        agregarAmistadPersona("Valentin","Juan");
+        agregarAmistadPersona("Jorge","Valentin");
+
+
+    }
+
+    
+        
     
     //N = sizeGrafo();
 }
+
 
 
 /**
