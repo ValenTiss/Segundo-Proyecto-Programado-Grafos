@@ -62,6 +62,8 @@ struct Lugar *grafo; // Apuntador del incio del grafo.
  */ 
 struct Persona{//Creacion de la persona (doble) con su lista de amigos.
     string nombre;
+    int tipoAvance;
+    int tiempoRecorrido;
     Persona* antP;
     Persona* sigP;
     Persona* listaAmigos;
@@ -69,7 +71,6 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos.
     struct Lugar* lugarActual;
     struct Lugar* lugarDestino;
     struct Ruta* rutasRecorridas;
-    struct Lugar* lugaresVisitados;
     
     /**
      * Metodo constructor de la estructura de persona.
@@ -79,8 +80,10 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos.
      * 
      */ 
 
-    Persona(string n,struct Lugar* lugarInicio ,Lugar* lugarDestino){
+    Persona(string n,int a,struct Lugar* lugarInicio ,Lugar* lugarDestino){
         nombre = n;
+        tipoAvance = a;
+        tiempoRecorrido = 0;
         antP=NULL;
         sigP= NULL;
         this->lugarInicio = lugarInicio;
@@ -88,7 +91,7 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos.
         this->lugarDestino = lugarDestino;
         listaAmigos=NULL;
         rutasRecorridas = NULL;
-        lugaresVisitados = lugarInicio;
+        
     }
 
 }*listaDePersonas; // Lista de las personas en el grafo.
@@ -166,7 +169,7 @@ bool borrarLugar(string lugar){
     }
     else if(grafo == getLugar(lugar)){
         grafo = grafo->sigV;
-        //cambiarLugarPersona();
+        cambiarLugarPersonas(getLugar(lugar));
         borrarRutaInexistente(lugar);
         return true;
     }else
@@ -630,9 +633,10 @@ bool validarPersona(string nombre,string lugarInicio,Persona* listaPersonas){
  *Metodo para insertar personas en la lista.
  *@param nombre Nombre de la persona.
  *@param lugarInicio Lugar de inicio de la persona.
+ *@param tipoAvance El tipo de avance que va a realizar la persona
  *@return Objeto tipo persona agregada a la lista,nulo si no ya existe.
  */ 
-Persona* insertarPersona(string nombre,string lugarInicio,string lugarDestino){
+Persona* insertarPersona(string nombre,string lugarInicio,string lugarDestino,int tipoAvance){
     bool existe = validarPersona(nombre,lugarInicio,listaDePersonas);
 
     if(existe)
@@ -654,7 +658,7 @@ Persona* insertarPersona(string nombre,string lugarInicio,string lugarDestino){
         return NULL;
     }
 
-    Persona*nuevo = new Persona(nombre,lugarI,lugarD);
+    Persona*nuevo = new Persona(nombre,tipoAvance,lugarI,lugarD);
     
     nuevo -> sigP = listaDePersonas;
     if(listaDePersonas != NULL){
@@ -719,7 +723,7 @@ void agregarAmistadPersona(string nombrePersona,string nombreAmigo){
     }
 
     Persona*amigoBackup = amigo;
-    amigo = new Persona(amigo->nombre,amigo->lugarInicio,amigo->lugarDestino);
+    amigo = new Persona(amigo->nombre,amigo->tipoAvance,amigo->lugarInicio,amigo->lugarDestino);
     
     amigo -> sigP = persona->listaAmigos;
     if(persona->listaAmigos != NULL){
@@ -727,7 +731,7 @@ void agregarAmistadPersona(string nombrePersona,string nombreAmigo){
     }
     persona->listaAmigos = amigo;
 
-    personaBackup = new Persona(personaBackup->nombre,personaBackup->lugarInicio,personaBackup->lugarDestino);
+    personaBackup = new Persona(personaBackup->nombre,personaBackup->tipoAvance,personaBackup->lugarInicio,personaBackup->lugarDestino);
     
     personaBackup -> sigP = amigoBackup->listaAmigos;
     if(amigoBackup->listaAmigos != NULL){
@@ -928,9 +932,9 @@ void CargarDatos(){
     insertarRuta("San Jose", "Heredia","12");;
     insertarRuta("San Jose", "Alajuela","23");
     insertarRuta("San Jose", "San Carlos","5");
-    insertarPersona("Valentin", "San Jose", "Heredia");
-    insertarPersona("Juan", "Heredia", "San Carlos");
-    insertarPersona("Jorge", "San Jose", "San Carlos");
+    insertarPersona("Valentin", "San Jose", "Heredia",1);
+    insertarPersona("Juan", "Heredia", "San Carlos",2);
+    insertarPersona("Jorge", "San Jose", "San Carlos",3);
     agregarAmistadPersona("Valentin", "Juan");
     
     //N = sizeGrafo();
@@ -1118,7 +1122,7 @@ void avanzarVerticeCercano(Persona* persona, string lugarAnterior){
 //variables globales
 string rutaMenor = "";
 int distanciaMenor = 0;
-Lugar* lugaresVisitados;
+struct Lugar*lugaresVisitados;
 /**
  *Meotdo para encontrar la ruta mas corta hacia un lugar,este metodo es recursivo.
  *@param anexo Lugar de origen a encontrar ruta.
@@ -1134,8 +1138,28 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
         if(anexo->lugar == destino)
         {
             if((distanciaMenor==0) || (dis < distanciaMenor)){
-                    distanciaMenor =dis;
-                    rutaMenor = ruta+" "+destino;
+                distanciaMenor =dis;
+                rutaMenor = ruta+","+destino;
+                char rutaChar[rutaMenor.length()+1];
+                strcpy(rutaChar, rutaMenor.c_str());
+                string lugarGuardar;
+                for(int i = 0;i < rutaMenor.length();i++){
+                    if(rutaChar[i] == ','){
+                        Lugar* nuevoLugar = new Lugar(lugarGuardar);
+                        nuevoLugar->sigV = lugaresVisitados;
+                        lugaresVisitados = nuevoLugar;
+                        
+                        lugarGuardar = "";
+                        
+                    }else
+                    {
+                        string s(1,(rutaChar[i]));
+                        lugarGuardar = lugarGuardar + s;
+                    }
+                        
+                        
+                }
+                    
             }
             existeRuta= true;
              return existeRuta;
@@ -1144,16 +1168,46 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
 
     struct Ruta *tempR =anexo->subLArcos;
     while(tempR != NULL){
-        lugaresVisitados = getLugar(anexo->lugar);
-        lugaresVisitados = lugaresVisitados -> sigV;
-        rutaCorta(getLugar(tempR->destino), destino, ruta+" "+anexo->lugar, dis + stoi(tempR->tiempoRecorrido));
+        rutaCorta(getLugar(tempR->destino), destino, ruta+","+anexo->lugar, dis + stoi(tempR->tiempoRecorrido));
         tempR = tempR->sigAr;
     }
     anexo->siVisitado =false;
     
-    return NULL;
+    return false;
 }
 
+/**
+ *Metodo para que la persona avance en el grafo hasta su destino/
+ *@param persona Persona la cual va a recorrer la ruta corta hacia un destino
+ */
+void avanzarRutaCorta(Persona*persona){
+    bool existe = rutaCorta(persona->lugarInicio, persona->lugarDestino->lugar, "", 0);
+    if(!existeRuta){
+        cout<<"La persona de nombre "<< persona->nombre<< " no puede llegar a su destino ya que no existe ruta"<<endl;
+        return;
+    }
+    
+    persona->tiempoRecorrido = distanciaMenor;
+    Lugar* tempL = lugaresVisitados;
+    
+    while(lugaresVisitados != NULL){
+        cout<<lugaresVisitados->lugar<<endl;
+        if(lugaresVisitados ->sigV != NULL)
+            persona->rutasRecorridas = getRuta(lugaresVisitados, lugaresVisitados->sigV->lugar);
+        
+        
+        Persona*tempP = listaDePersonas;
+        while(tempP != NULL){
+            if(tempP->lugarActual == lugaresVisitados){
+                agregarAmistadPersona(persona->nombre, tempP->nombre);
+            }
+            tempP = tempP->sigP;
+            
+        }
+        lugaresVisitados = lugaresVisitados -> sigV;
+    }
+    
+}
 
 //
 //int N = 1;
@@ -1163,7 +1217,7 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
 //// Function to check if a vertex v
 //// can be added at index pos in
 //// the Hamiltonian Cycle
-//bool isSafe(int v, int graph[][N], vector<int> path, int pos)
+//bool isSafe(int v, intgraph[][N], vector<int> path, int pos)
 //{
 //
 //    // If the vertex is adjacent to
@@ -1312,6 +1366,33 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
 
 
 /**
+ *Metodo para imprimir el avance de una persona
+ *@param persona Persona la cual queremos ver el avance
+ */
+void imprimirAvance(Persona*persona){
+    Ruta*tempR = persona->rutasRecorridas;
+    Lugar*lugarMostrar = persona->lugarInicio;
+    int tiempoTotal = 0;
+    while(tempR != NULL){
+        if(tempR == persona->rutasRecorridas){
+            cout<<"La persona de nombre "<<persona->nombre<<" empezo en "<<lugarMostrar->lugar<< " minutos y en "<<tempR->tiempoRecorrido <<" llego hasta "<<tempR->destino<<endl;
+            
+        }else
+        {
+            if(tempR-> sigAr == NULL){
+                cout<<"Por ultimo desde "<< lugarMostrar->lugar <<" llego a su destino llamado "<< persona->lugarDestino->lugar<<" en "<< tempR->tiempoRecorrido<<" minutos."<<endl;
+            }else
+            {
+                cout<<"Recorrio la ruta desde "<< lugarMostrar->lugar <<" hasta "<< tempR->destino<<" en "<<tempR->tiempoRecorrido<<" minutos."<<endl;
+            }
+        }
+        lugarMostrar = getLugar(tempR->destino);
+        tiempoTotal += stoi(tempR->tiempoRecorrido);
+        tempR = tempR-> sigAr;
+    }
+}
+
+/**
  *Metodo que al pulsar alguna tecla seguidamente el enter limpie la consola y continue.
  */
 
@@ -1354,14 +1435,32 @@ void mantenimientoListas(int opcion){
                 case 1:
                 {
                     
-                    string nombreP,inicioP,destinoP;
+                    string nombreP,inicioP,destinoP,a;
                     cout<<"Ingrese el nombre de la nueva persona: ";
                     getline(cin>>ws, nombreP);
                     cout<<"\nIngrese el nombre del lugar de inicio: ";
                     getline(cin>>ws, inicioP);
                     cout<<"\nIngrese el nombre del lugar de destino:";
                     getline(cin>>ws,destinoP);
-                    Persona*nuevaPersona = insertarPersona(nombreP, inicioP, destinoP);
+                    cout<<"\nIngrese el tipo de avance que va a realizar esta persona"<<endl;
+                    cout<<"\t[1] - Avance aleatorio"<<endl;
+                    cout<<"\t[2] - Avance hacia vertice adyacente mas cercano."<<endl;
+                    cout<<"\t[3] - Avance siguiendo la ruta corta desde su punto de partida."<<endl;
+                    cout<<"\t[4] - Avance siguiendo la ruta corta hasta un punto determinado"<<endl;
+                    getline(cin>>ws,a);
+                    
+                    bool numero = isNumber(a);
+                    while((!numero)or(stoi(a) > 4) or (0 < stoi(a))){
+                        cout<<"El numero ingresado en avance no existe ,intente nuevamente"<<endl;
+                        cout<<"\t[1] - Avance aleatorio"<<endl;
+                        cout<<"\t[2] - Avance hacia vertice adyacente mas cercano."<<endl;
+                        cout<<"\t[3] - Avance siguiendo la ruta corta desde su punto de partida."<<endl;
+                        cout<<"\t[4] - Avance siguiendo la ruta corta hasta un punto determinado"<<endl;
+                        getline(cin>>ws,a);
+                        numero = isNumber(a);
+                    }
+                    
+                    Persona*nuevaPersona = insertarPersona(nombreP,inicioP, destinoP,stoi(a));
                     
                     if(nuevaPersona == NULL){
                         cout<<"\nLa persona no se pudo agregar al grafo, intente nuevamente"<<endl;
@@ -1540,7 +1639,6 @@ void consultas(int opcion){
         {
             cout<<endl<<"Estado de las personas en cada avance: "<<endl;
             //metodo
-            pressKeyToContinue();
             break;
             
             
@@ -1556,8 +1654,7 @@ void consultas(int opcion){
         case 3:
         {
             cout<<endl<<"Primera persona en terminar la caminata: "<<endl;
-            //metodo
-            pressKeyToContinue();
+            
             break;
             
         }
@@ -1566,8 +1663,6 @@ void consultas(int opcion){
         {
             
             cout<<endl<<"Ultima persona en terminar la caminata: "<<endl;
-            //metodo
-            pressKeyToContinue();
             break;
             
         }
@@ -1760,8 +1855,11 @@ void menu(){
  */
 int main()
 {
-    
     CargarDatos();
-    menu();
+    avanzarRutaCorta(getPersona("Valentin", listaDePersonas));
+    
+    //imprimirAvance(getPersona("Valentin", listaDePersonas));
+    
+    //menu();
     return 0;
 }
