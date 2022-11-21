@@ -679,6 +679,7 @@ bool borrarPersona(string nombre){
     
     }
     else if(listaDePersonas->nombre == nombre){
+        cout<<"La persona: "<< listaDePersonas->nombre<<" se ha borrado correctamente."; 
             listaDePersonas = listaDePersonas->sigP;
             return true;
     }else
@@ -687,6 +688,7 @@ bool borrarPersona(string nombre){
         Persona *tempAnt= listaDePersonas;
         while(temp != NULL){
             if(temp->nombre == nombre){//borrar
+            cout<<"La persona: "<< temp->nombre<<" se ha borrado correctamente."; 
                     tempAnt->sigP  = temp->sigP;
                     return true;
             }
@@ -1318,6 +1320,8 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
 bool pressKeyToContinue(){
     cout<<"\n\n"<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
     cout<<"Presione alguna tecla para limpiar ...";
+    string esperar; 
+    cin>>esperar; 
     char c = getchar();
     if((int)c != 27){
         for(int i = 0;i < 10;i++)
@@ -1364,7 +1368,6 @@ void mantenimientoListas(int opcion){
                         break;
                     }
                     cout<<"\n La persona de nombre "<<nombreP<<" se agrego a la lista del grafo."<<endl;
-                    
                     break;
                 }
                     
@@ -1380,6 +1383,7 @@ void mantenimientoListas(int opcion){
                         
                     }
                     cout<<"\nLa persona "<<nombreP << " ya no existe en la lista."<<endl;
+
                     break;
                 }
                 case 3:
@@ -1477,6 +1481,7 @@ void mantenimientoListas(int opcion){
                             break;
                         }
                         cout<<"\nLas rutas de "<<nombreA<<" a "<<nombreC<< " se crearon con exito."<<endl;
+
                         break;
                     }
                         
@@ -1535,7 +1540,7 @@ void consultas(int opcion){
         {
             cout<<endl<<"Estado de las personas en cada avance: "<<endl;
             //metodo
-            
+            pressKeyToContinue();
             break;
             
             
@@ -1552,7 +1557,7 @@ void consultas(int opcion){
         {
             cout<<endl<<"Primera persona en terminar la caminata: "<<endl;
             //metodo
-            
+            pressKeyToContinue();
             break;
             
         }
@@ -1562,6 +1567,7 @@ void consultas(int opcion){
             
             cout<<endl<<"Ultima persona en terminar la caminata: "<<endl;
             //metodo
+            pressKeyToContinue();
             break;
             
         }
@@ -1586,6 +1592,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Grafo en amplitud, con toda la info almacenada: "<<endl;
             amplitud();
+            pressKeyToContinue();
             break;
             
         }
@@ -1604,6 +1611,7 @@ void reportes(int opcion){
             }
             
             profundidad(getLugar(nombreLugar));
+            pressKeyToContinue();
             break;
             
         }
@@ -1613,6 +1621,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Rutas para las personas que avanzan de la forma 3 y 4 son las siguientes: "<<endl;
             //metodo
+            pressKeyToContinue();
             break;
             
         }
@@ -1623,6 +1632,7 @@ void reportes(int opcion){
             cout<<endl<<"Indique cual persona desea ver la cantidad y nombre de amigos: "<<endl;
             cin>>nombreP;
             imprimirAmistades(nombreP);
+            pressKeyToContinue();
             break;
             
         }
@@ -1631,6 +1641,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Quien o quienes no encontraron ningun amigo: "<<endl;
             personasSinAmigos();
+            pressKeyToContinue();
             break;
             
             
@@ -1640,6 +1651,7 @@ void reportes(int opcion){
         {
             cout<<endl<<"Cuales personas no pudieron realizar la caminada por no haber una ruta, o por no haber conexion conexa: "<<endl;
             personasSinRutas();
+            pressKeyToContinue();
             break;
         }
     }
@@ -1750,8 +1762,6 @@ int main()
 {
     
     CargarDatos();
-    //insertarPersona("Mario", "Heredia", "San Carlos");
-    //imprimirPersona();
     menu();
     return 0;
 }
