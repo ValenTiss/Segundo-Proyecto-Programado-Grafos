@@ -2,7 +2,9 @@
 #include <vector>
 #include <cstdlib>
 #include <time.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 using namespace std;
 
 //Definiciones para poder recorrer rutas.
@@ -67,6 +69,7 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos.
     Persona* antP;
     Persona* sigP;
     Persona* listaAmigos;
+    struct Lugar* lugarAnterior;
     struct Lugar* lugarInicio;
     struct Lugar* lugarActual;
     struct Lugar* lugarDestino;
@@ -88,6 +91,7 @@ struct Persona{//Creacion de la persona (doble) con su lista de amigos.
         sigP= NULL;
         this->lugarInicio = lugarInicio;
         this->lugarActual = lugarInicio;
+        this->lugarAnterior=lugarActual;
         this->lugarDestino = lugarDestino;
         listaAmigos=NULL;
         rutasRecorridas = NULL;
@@ -998,7 +1002,7 @@ void CargarDatos(){
         insertarRuta("San Jose", "Alajuela","23");
         insertarRuta("San Jose", "San Carlos","59");
         insertarRuta("Alajuela", "San Carlos", "36");
-        insertarRuta("Upala", "San Carlos", "42");
+        //insertarRuta("Upala", "San Carlos", "42");
         insertarRuta("San Jose", "Upala","41");;
         insertarRuta("Heredia", "Upala","50");
         insertarRuta("San Carlos", "Upala","15");
@@ -1135,7 +1139,7 @@ void imprimirGrafo(){
  *@param lugarAnterior Si se llama al metodo, este parametro debe ser un string vacio ("").
  */
 
-void avanzarAleatorio(Persona* persona, string lugarAnterior){
+void avanzarAleatorio(Persona* persona){
 
     Lugar* inicio= persona->lugarActual;
     vector<string> lugares;
@@ -1147,12 +1151,12 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
     cout<<"Lugar actual "<<inicio->lugar<<endl;
     
     if((inicio == NULL) or (inicio->siVisitado == true)){
-        cout<<endl;
+        cout<<"Fin del recorrido"<<endl;
         return;
     }
     
     inicio->siVisitado = true;
-    lugarAnt=lugarAnterior;
+    lugarAnt=persona->lugarAnterior->lugar;
     struct Ruta * tempR = inicio->subLArcos;
     while(tempR != NULL){
         cout<<"Hay ruta entre: "<<inicio->lugar<<" y "<<tempR->destino<<endl;
@@ -1170,8 +1174,7 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
         srand((unsigned int)time(NULL));
         ind=rand()%lugares.size();
     }else{
-        cout<<"No hay mas vertices hacia donde ir desde el lugar actual. Fin del recorrido.";
-        cout<<endl;
+        cout<<"No hay mas vertices hacia donde ir desde el lugar actual. Fin del recorrido."<<endl;
         return;
     }
     for (size_t x = 0; x < lugares.size(); x++) {
@@ -1189,7 +1192,7 @@ void avanzarAleatorio(Persona* persona, string lugarAnterior){
             lugares.clear();
             inicio=persona->lugarActual;
             if (inicio->lugar!=lugarAnt){
-                avanzarAleatorio(persona, lugarAnt);
+                avanzarAleatorio(persona);
             }      
         }
     }
@@ -1218,7 +1221,7 @@ int buscarNumeroVector(vector<int> b,int bus){
  *@param persona Persona la cual se va a mover
  *@param lugarAnterior Si se llama al metodo, este parametro debe ser un string vacio ("").
  */
-void avanzarVerticeCercano(Persona* persona, string lugarAnterior){
+void avanzarVerticeCercano(Persona* persona /*string lugarAnterior*/){
 
     Lugar* inicio= persona->lugarActual;
     vector<string> lugares;
@@ -1238,7 +1241,7 @@ void avanzarVerticeCercano(Persona* persona, string lugarAnterior){
     }
     
     inicio->siVisitado = true;
-    lugarAnt=lugarAnterior;
+    lugarAnt=persona->lugarAnterior->lugar;
     struct Ruta * tempR = inicio->subLArcos;
     while(tempR != NULL){
         Lugar* lugarDes=getLugar(tempR->destino);
@@ -1285,7 +1288,7 @@ void avanzarVerticeCercano(Persona* persona, string lugarAnterior){
             lugares.clear();
             inicio=persona->lugarActual;
             if (inicio->lugar!=lugarAnt){
-                avanzarVerticeCercano(persona, lugarAnt);
+                avanzarVerticeCercano(persona);
             }
         }
     }
@@ -1312,7 +1315,14 @@ bool rutaCorta(struct Lugar *anexo, string destino, string ruta, int dis){
         {
             if((distanciaMenor==0) || (dis < distanciaMenor)){
                 distanciaMenor =dis;
+                
                 rutaMenor = ruta+","+destino;
+                cout<<rutaMenor<<endl;
+                if(rutaMenor[0]=','){
+                    rutaMenor=rutaMenor[1,rutaMenor.size()];
+                }
+                
+
                 char rutaChar[rutaMenor.length()+1];
                 strcpy(rutaChar, rutaMenor.c_str());
                 string lugarGuardar;
@@ -1545,6 +1555,22 @@ void imprimirAvance(Persona*persona){
     Ruta*tempR = persona->rutasRecorridas;
     Lugar*lugarMostrar = persona->lugarInicio;
     int tiempoTotal = 0;
+
+    if(persona->tipoAvance==1){
+        avanzarAleatorio(persona);
+    }
+    if(persona->tipoAvance==2){
+        avanzarVerticeCercano(persona);
+    }
+    if(persona->tipoAvance==3){
+       
+    }
+    if(persona->tipoAvance==4){
+        avanzarRutaCorta(persona);
+        imprimirAvance(persona);
+    }
+
+    /**
     while(tempR != NULL){
         if(tempR == persona->rutasRecorridas){
             cout<<"La persona de nombre "<<persona->nombre<<" empezo en "<<lugarMostrar->lugar<< " minutos y en "<<tempR->tiempoRecorrido <<" llego hasta "<<tempR->destino<<endl;
@@ -1562,6 +1588,7 @@ void imprimirAvance(Persona*persona){
         tiempoTotal += stoi(tempR->tiempoRecorrido);
         tempR = tempR-> sigAr;
     }
+    */
 }
 
 /**
@@ -1573,8 +1600,8 @@ void imprimirAvance(Persona*persona){
 bool pressKeyToContinue(){
     cout<<"\n\n"<<"[esc] - Presione escape para salir (x)\n\n\n"<<endl;
     cout<<"Presione alguna tecla para limpiar ...";
-    string esperar; 
-    cin>>esperar; 
+    //string esperar; 
+    //cin>>esperar; 
     char c = getchar();
     if((int)c != 27){
         for(int i = 0;i < 10;i++)
@@ -1986,10 +2013,10 @@ void dibujarMenu(int opcion)
  */
 void menu(){
      
-        int c;
+        char c;
         do {
             dibujarMenu(0);
-            c=getchar();
+            cin>>c;
             switch((int)c - '0')
             {
             case 1:
