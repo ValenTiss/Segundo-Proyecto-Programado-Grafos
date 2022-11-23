@@ -1234,7 +1234,6 @@ void avanzarVerticeCercano(Persona* persona /*string lugarAnterior*/){
     cout<<endl<<"Avance al vertice mas cercano (Avance 2)"<<endl;
     cout<<"Nombre de la persona: "<<persona->nombre<<endl;
     cout<<endl;
-    cout<<"Lugar anterior: "<<lugarAnt<<endl;
     cout<<"Lugar actual "<<inicio->lugar<<endl;
     
     if((inicio == NULL) or (inicio->siVisitado == true)){
