@@ -1231,12 +1231,16 @@ void avanzarVerticeCercano(Persona* persona /*string lugarAnterior*/){
     string lugarAnt;
     int c;
     int mayor, menor;
-
+    cout<<endl<<"Avance al vertice mas cercano (Avance 2)"<<endl;
+    cout<<"Nombre de la persona: "<<persona->nombre<<endl;
     cout<<endl;
+    cout<<"Lugar anterior: "<<lugarAnt<<endl;
     cout<<"Lugar actual "<<inicio->lugar<<endl;
     
     if((inicio == NULL) or (inicio->siVisitado == true)){
         cout<<"Fin del recorrido"<<endl;
+        inicio->siVisitado = false;
+        persona->lugarAnterior->siVisitado=false;
         return;
     }
     
@@ -1274,6 +1278,8 @@ void avanzarVerticeCercano(Persona* persona /*string lugarAnterior*/){
         ind= buscarNumeroVector(lugaresTiempo, menor);
     }else{
         cout<<"No hay mas vertices hacia donde ir desde el lugar actual. Fin del recorrido."<<endl;
+        inicio->siVisitado = false;
+        persona->lugarAnterior->siVisitado=false;
         return;
     }
 
@@ -1289,6 +1295,8 @@ void avanzarVerticeCercano(Persona* persona /*string lugarAnterior*/){
             inicio=persona->lugarActual;
             if (inicio->lugar!=lugarAnt){
                 avanzarVerticeCercano(persona);
+                inicio->siVisitado = false;
+                persona->lugarAnterior->siVisitado=false;
             }
         }
     }
@@ -1551,24 +1559,27 @@ void avanzarRutaCorta(Persona*persona){
  *Metodo para imprimir el avance de una persona
  *@param persona Persona la cual queremos ver el avance
  */
-void imprimirAvance(Persona*persona){
+void imprimirAvance(/*Persona*persona*/){
+    Persona* persona=listaDePersonas;
     Ruta*tempR = persona->rutasRecorridas;
     Lugar*lugarMostrar = persona->lugarInicio;
     int tiempoTotal = 0;
 
-    if(persona->tipoAvance==1){
-        avanzarAleatorio(persona);
+    Persona*temp  = listaDePersonas;
+    
+    while (temp->sigP != NULL){
+
+        if(temp->tipoAvance==2){
+            //temp->sigP->lugarActual->siVisitado=false;
+            //temp->sigP->lugarAnterior->siVisitado=false;
+            avanzarVerticeCercano(temp);
+            temp = temp -> sigP;
+            
+        }
+        
+        else{temp = temp -> sigP;}
     }
-    if(persona->tipoAvance==2){
-        avanzarVerticeCercano(persona);
-    }
-    if(persona->tipoAvance==3){
-       
-    }
-    if(persona->tipoAvance==4){
-        avanzarRutaCorta(persona);
-        imprimirAvance(persona);
-    }
+         
 
     /**
     while(tempR != NULL){
@@ -1836,15 +1847,15 @@ void consultas(int opcion){
             
         case 1:
         {
-            string nombre;
+            /*string nombre;
             cout<<"\nIngrese el nombre de la persona a mostrar: ";
             getline(cin>>ws, nombre);
             while(getPersona(nombre, listaDePersonas) == NULL){
                 cout<<"\nEsta persona no existe en la lista de personas"<<endl;
                 cout<<"Ingrese el nombre de otra persona:";
                 getline(cin>>ws, nombre);
-            }
-            imprimirAvance(getPersona(nombre, listaDePersonas));
+            }*/
+            imprimirAvance(/*getPersona(nombre, listaDePersonas)*/);
             break;
             
             
